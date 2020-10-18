@@ -1,4 +1,5 @@
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,7 +19,7 @@ public class VentanaMenu extends JFrame {
 	private Paleta paleta;
 	
 	
-	public VentanaMenu(ComponentePapel cp) {
+	public VentanaMenu(ComponentePapel cp, Papel p, Graphics g) {
 		setTitle("Menu");
 		setSize(new Dimension(310, 400));
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -48,6 +49,7 @@ public class VentanaMenu extends JFrame {
 			}
 		});
 		add(botonPaleta);
+		
 		
 		setVisible(true);
 	}

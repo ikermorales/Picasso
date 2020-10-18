@@ -1,13 +1,30 @@
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Point;
+import java.awt.Polygon;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.Robot;
+import java.awt.Toolkit;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
+import javax.swing.GrayFilter;
 import javax.swing.JComponent;
+import javax.swing.KeyStroke;
+import javax.swing.text.Keymap;
 
 public class ComponentePapel extends JComponent {
 
@@ -20,16 +37,30 @@ public class ComponentePapel extends JComponent {
 	private int yVieja;
 	private static Color colorPincel;
 	private static int pincel;
+	private int tamanyo = 8; //CAMBIAR
+	private int[] xcuadrado = new int[4];
+	private int[] ycuadrado = new int [4];
+	private Polygon cuadrado;
+	private static int contadorImagen = 0;
+	private KeyListener listener;
 
-	public ComponentePapel() {
+
+	public ComponentePapel(Papel p) {
 		setDoubleBuffered(false);
-
+		setFocusable(true);
+		requestFocus();
 		addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
 				xVieja = e.getX();
 				yVieja = e.getY();
 			}
+
+			public void mouseReleased(MouseEvent e) {
+				generarEstado();
+			}
+
 		});
+
 
 		addMouseMotionListener(new MouseMotionAdapter() {
 			public void mouseDragged(MouseEvent e) {
@@ -38,20 +69,36 @@ public class ComponentePapel extends JComponent {
 
 				if (graficos != null) {
 					graficos.setPaint(colorPincel);
-					if (pincel == 0) {
-						System.out.println("Boli");
-						graficos.drawLine(xVieja, yVieja, xActual, yActual); //Pincel Bolígrafo
+					if (pincel == 0) {	//Pincel Bolígrafo
+						graficos.drawLine(xVieja, yVieja, xActual, yActual); 
 						repaint();
 						xVieja = xActual;
 						yVieja = yActual; 
 					}
-					else if(pincel == 1) {
-						System.out.println("Pixel");
-						graficos.drawRect(xActual, yActual, 30, 30); //Pincel Pixelado
-						
+					else if(pincel == 1) { //Pincel Pixelado
+						xcuadrado[0] = xActual;
+						ycuadrado[0] = yActual;
+
+
+						xcuadrado[1] = xActual + tamanyo;
+						ycuadrado[1] = yActual;
+
+
+						xcuadrado[2] = xActual + tamanyo;
+						ycuadrado[2] = yActual + tamanyo;
+
+						xcuadrado[3] = xActual;
+						ycuadrado[3] = yActual + tamanyo;
+
+						cuadrado = new Polygon(xcuadrado, ycuadrado, 4);
+
+						graficos.fill(cuadrado);
+						graficos.draw(cuadrado);
+
 						repaint();
 						xVieja = xActual;
 						yVieja = yActual; 
+
 					} else {
 						System.out.println("No hay mas pinceles");
 					}
@@ -60,6 +107,17 @@ public class ComponentePapel extends JComponent {
 				}
 			}
 		});
+		
+		addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent e) {
+				if ((e.getKeyCode() == KeyEvent.VK_Z) && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0)) {
+					cargarImagenAnterior(graficos);
+				}			
+			}
+		});
+		
+		
+		
 	}
 
 
@@ -74,7 +132,7 @@ public class ComponentePapel extends JComponent {
 	}
 
 
-	//TODO METODO Pintar
+	//TODO METODO Borrar
 	public void clear() {
 		graficos.setPaint(new Color(255,255,255));
 		graficos.fillRect(0, 0, getSize().width, getSize().height);
@@ -82,85 +140,89 @@ public class ComponentePapel extends JComponent {
 		repaint();
 	}
 
+	public void generarEstado() {
+		Dimension d = getSize();
+		BufferedImage imagen = new BufferedImage(d.width, d.height, BufferedImage.TYPE_INT_RGB);
+		Graphics2D g2d = imagen.createGraphics();
+		this.print(g2d);
+		g2d.dispose();
+		try {
+			File file;
+			file = new File(contadorImagen + ".jpg");
+			ImageIO.write(imagen, "png", file);
+			contadorImagen++;
+		} catch (IOException e) {
+			System.out.println("No ha funcionado el generador de estados");
+		}
+	}
+	
+
+	public void cargarImagenAnterior(Graphics g) {
+		if(contadorImagen >= 2) {
+			Dimension d = getSize();
+			BufferedImage imagen = new BufferedImage(d.width, d.height, BufferedImage.TYPE_INT_RGB);
+			contadorImagen = contadorImagen - 2;
+			File imagenAnterior = new File(contadorImagen + ".jpg");
+			try {
+				imagen = ImageIO.read(imagenAnterior);
+				g.drawImage(imagen, 0, 0, getWidth(), getHeight(), Color.BLACK, null);
+				g = imagen.createGraphics();
+				contadorImagen = contadorImagen + 1;
+				repaint();
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
 
 	public Image getImagen() {
 		return imagen;
 	}
-
-
 	public Graphics2D getGraficos() {
 		return graficos;
 	}
-
-
 	public int getxActual() {
 		return xActual;
 	}
-
-
 	public int getyActual() {
 		return yActual;
 	}
-
-
 	public int getxVieja() {
 		return xVieja;
 	}
-
-
 	public int getyVieja() {
 		return yVieja;
 	}
-
-
 	public Color getColorPincel() {
 		return colorPincel;
 	}
-
-
 	public void setImagen(Image imagen) {
 		this.imagen = imagen;
 	}
-
-
 	public void setGraficos(Graphics2D graficos) {
 		this.graficos = graficos;
 	}
-
-
 	public void setxActual(int xActual) {
 		this.xActual = xActual;
 	}
-
-
 	public void setyActual(int yActual) {
 		this.yActual = yActual;
 	}
-
-
 	public void setxVieja(int xVieja) {
 		this.xVieja = xVieja;
 	}
-
-
 	public void setyVieja(int yVieja) {
 		this.yVieja = yVieja;
 	}
-
-
 	public void setColorPincel(Color colorPincel) {
 		this.colorPincel = colorPincel;
 	}
-
-
 	public int getPincel() {
 		return pincel;
 	}
-
-
 	public void setPincel(int pincel) {
 		this.pincel = pincel;
 	}
-
-
 }
