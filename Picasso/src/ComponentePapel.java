@@ -39,7 +39,7 @@ public class ComponentePapel extends JComponent {
 	private int yVieja;
 	private static Color colorPincel;
 	private static int pincel;
-	private int tamanyo = 8; //cambiar
+	private int tamanyo = 8; //cambiarr
 	private int[] xcuadrado = new int[4];
 	private int[] ycuadrado = new int [4];
 	private Polygon cuadrado;
