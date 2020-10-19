@@ -30,6 +30,7 @@ public class VentanaMenu extends JFrame {
 		pincelesCombo = new JComboBox<>();
 		pincelesCombo.addItem("Bolígrafo");
 		pincelesCombo.addItem("Pixelado");
+		pincelesCombo.addItem("Suave");
 		pincelesCombo.addActionListener(new ActionListener() {
 			
 			@Override

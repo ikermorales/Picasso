@@ -18,7 +18,9 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 import javax.imageio.ImageIO;
 import javax.swing.GrayFilter;
@@ -41,6 +43,9 @@ public class ComponentePapel extends JComponent {
 	private int[] xcuadrado = new int[4];
 	private int[] ycuadrado = new int [4];
 	private Polygon cuadrado;
+	private int[] xcirculo = new int[4];
+	private int[] ycirculo = new int [4];
+	private Polygon circulo;
 	private static int contadorImagen = 0;
 	private KeyListener listener;
 
@@ -99,11 +104,17 @@ public class ComponentePapel extends JComponent {
 						xVieja = xActual;
 						yVieja = yActual; 
 
-					} else {
-						System.out.println("No hay mas pinceles");
+					} 
+					else if(pincel== 2) {
+						graficos.fillOval(xActual, yActual, tamanyo, tamanyo);
+						repaint();
+						xVieja = xActual;
+						yVieja = yActual;
 					}
 
-
+					else {
+						System.out.println("no hay mas pinceles");
+					}
 				}
 			}
 		});
@@ -147,10 +158,11 @@ public class ComponentePapel extends JComponent {
 		this.print(g2d);
 		g2d.dispose();
 		try {
-			File file;
-			file = new File(contadorImagen + ".jpg");
+			File file = new File("proceso/" + contadorImagen + ".jpg");
+			OutputStream out = new FileOutputStream(file);
 			ImageIO.write(imagen, "png", file);
 			contadorImagen++;
+			out.close();
 		} catch (IOException e) {
 			System.out.println("No ha funcionado el generador de estados");
 		}
@@ -162,7 +174,7 @@ public class ComponentePapel extends JComponent {
 			Dimension d = getSize();
 			BufferedImage imagen = new BufferedImage(d.width, d.height, BufferedImage.TYPE_INT_RGB);
 			contadorImagen = contadorImagen - 2;
-			File imagenAnterior = new File(contadorImagen + ".jpg");
+			File imagenAnterior = new File("proceso/" + contadorImagen + ".jpg");
 			try {
 				imagen = ImageIO.read(imagenAnterior);
 				g.drawImage(imagen, 0, 0, getWidth(), getHeight(), Color.BLACK, null);
@@ -224,5 +236,59 @@ public class ComponentePapel extends JComponent {
 	}
 	public void setPincel(int pincel) {
 		this.pincel = pincel;
+	}
+	public int getTamanyo() {
+		return tamanyo;
+	}
+	public int[] getXcuadrado() {
+		return xcuadrado;
+	}
+	public int[] getYcuadrado() {
+		return ycuadrado;
+	}
+	public Polygon getCuadrado() {
+		return cuadrado;
+	}
+	public int[] getXcirculo() {
+		return xcirculo;
+	}
+	public int[] getYcirculo() {
+		return ycirculo;
+	}
+	public Polygon getCirculo() {
+		return circulo;
+	}
+	public int getContadorImagen() {
+		return contadorImagen;
+	}
+	public KeyListener getListener() {
+		return listener;
+	}
+	public void setTamanyo(int tamanyo) {
+		this.tamanyo = tamanyo;
+	}
+	public void setXcuadrado(int[] xcuadrado) {
+		this.xcuadrado = xcuadrado;
+	}
+	public void setYcuadrado(int[] ycuadrado) {
+		this.ycuadrado = ycuadrado;
+	}
+	public void setCuadrado(Polygon cuadrado) {
+		this.cuadrado = cuadrado;
+	}
+	public void setXcirculo(int[] xcirculo) {
+		this.xcirculo = xcirculo;
+	}
+	public void setYcirculo(int[] ycirculo) {
+		this.ycirculo = ycirculo;
+	}
+	public void setCirculo(Polygon circulo) {
+		this.circulo = circulo;
+	}
+	public static void setContadorImagen(int contadorImagen) {
+		ComponentePapel.contadorImagen = contadorImagen;
+	}
+	public void setListener(KeyListener listener) {
+		this.listener = listener;
 	}
 }
