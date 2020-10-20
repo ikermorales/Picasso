@@ -20,7 +20,7 @@ public class VentanaProceso extends JFrame{
 	
 	
 	
-	public VentanaProceso() {  //ComponentePapel cp
+	public VentanaProceso(ComponentePapel cp) {
 		setTitle("Proceso");
 		setSize(440, 700);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -44,14 +44,14 @@ public class VentanaProceso extends JFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(pagina < 4) { //cp.getContadorImagen()
+				if(pagina < cp.getContadorImagen() - 1) {
 					pagina++;
 					ImageIcon ic = new ImageIcon(hashPaginas.get(pagina));
 					Image imagen = ic.getImage(); 
 					Image nuevaimagenreeslada = imagen.getScaledInstance(400, 600,  java.awt.Image.SCALE_SMOOTH);
 					ic = new ImageIcon(nuevaimagenreeslada);  
 					imagenProceso.setIcon(ic);
-					separador.setLabel(pagina + " /" + " 4"); //cp.getContadorImagen()
+					separador.setLabel(pagina + " / " + (cp.getContadorImagen() - 1) );
 					repaint();
 					validate();
 					System.out.println(pagina);
@@ -71,7 +71,7 @@ public class VentanaProceso extends JFrame{
 					Image nuevaimagenreeslada = imagen.getScaledInstance(400, 600,  java.awt.Image.SCALE_SMOOTH);   
 					ic = new ImageIcon(nuevaimagenreeslada);  
 					imagenProceso.setIcon(ic);
-					separador.setLabel(pagina + " /" + " 4"); //cp.getContadorImagen()
+					separador.setLabel(pagina + " / " + (cp.getContadorImagen() - 1) );
 					repaint();
 					validate();
 					System.out.println(pagina);
@@ -80,7 +80,7 @@ public class VentanaProceso extends JFrame{
 			}
 		});
 		
-		separador = new JButton("0 / " + "4"); //cp.getContadorImagen()
+		separador = new JButton(pagina + " /" + (cp.getContadorImagen() - 1) ); 
 		panelSeleccion.add(retroceder);
 		panelSeleccion.add(separador);
 		panelSeleccion.add(avanzar);
@@ -92,12 +92,10 @@ public class VentanaProceso extends JFrame{
 		Image nuevaimagenreeslada = imagen.getScaledInstance(400, 600,  java.awt.Image.SCALE_SMOOTH);
 		ic = new ImageIcon(nuevaimagenreeslada);  
 		imagenProceso.setIcon(ic);
-		separador.setLabel(pagina + " /" + " 4"); //cp.getContadorImagen()
+		
 		
 		setVisible(true);
 	}
 	
-	public static void main(String[] args) {
-		VentanaProceso vp = new VentanaProceso();
-	}
+	
 }

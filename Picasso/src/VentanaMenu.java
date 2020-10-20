@@ -18,6 +18,8 @@ public class VentanaMenu extends JFrame {
 	private JButton botonPaleta;
 	private Paleta paleta;
 	
+	private JButton botonProceso;
+	private VentanaProceso proceso;
 	
 	public VentanaMenu(ComponentePapel cp, Papel p, Graphics g) {
 		setTitle("Menu");
@@ -50,6 +52,18 @@ public class VentanaMenu extends JFrame {
 			}
 		});
 		add(botonPaleta);
+		
+		botonProceso = new JButton("Proceso");
+		botonProceso.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				proceso = new VentanaProceso(cp);
+				
+				
+			}
+		});
+		add(botonProceso);
 		
 		
 		setVisible(true);

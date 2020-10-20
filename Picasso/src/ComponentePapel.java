@@ -103,7 +103,7 @@ public class ComponentePapel extends JComponent {
 						repaint();
 						xVieja = xActual;
 						yVieja = yActual; 
-
+						
 					} 
 					else if(pincel== 2) {
 						graficos.fillOval(xActual, yActual, tamanyo, tamanyo);
