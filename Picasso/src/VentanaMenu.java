@@ -38,7 +38,7 @@ public class VentanaMenu extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				cp.setPincel(pincelesCombo.getSelectedIndex());
-				System.out.println(cp.getPincel());
+				
 			}
 		});
 		panelPinceles.add(pincelesCombo);

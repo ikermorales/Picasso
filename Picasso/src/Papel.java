@@ -4,7 +4,7 @@ import javax.swing.JFrame;
 public class Papel extends JFrame {
 
 	private ComponentePapel compPapel;
-	private int anchura = 600;
+	private int anchura = 600;//esto tiene que poder cambiarse
 	private int altura = 800;
 
 	public Papel() {

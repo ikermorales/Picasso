@@ -5,7 +5,7 @@ public class Picasso {
 	private static Papel papel;
 	private static ComponentePapel componente = new ComponentePapel(papel);
 	private static VentanaMenu menu;
-	private static Graphics graficos;
+	private static Graphics graficos;//puede estar en componente papel
 
 	public static void main(String[] args) {
 

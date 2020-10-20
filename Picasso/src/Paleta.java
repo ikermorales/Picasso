@@ -13,15 +13,13 @@ public class Paleta extends JFrame{
 		setTitle("Paleta de colores");
 		setSize(660,275);
 		setVisible(true);
-		setLayout(new FlowLayout());
-		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		
 		
 		paletaC = new JColorChooser(new ColorSelectionModel() {
 			@Override
 			public void setSelectedColor(Color color) {
 				cp.setColorPincel(color);
-				paletaC.setBackground(color); //Mostramos el color escogido
+				paletaC.setBackground(color); //Mostramos el color escogido.
 			}
 			@Override
 			public void removeChangeListener(javax.swing.event.ChangeListener listener) {				

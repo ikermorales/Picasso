@@ -164,7 +164,7 @@ public class ComponentePapel extends JComponent {
 			contadorImagen++;
 			out.close();
 		} catch (IOException e) {
-			System.out.println("No ha funcionado el generador de estados");
+			System.out.println("No ha funcionado el generador de estados.");
 		}
 	}
 	

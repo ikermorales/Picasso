@@ -54,7 +54,7 @@ public class VentanaProceso extends JFrame{
 					separador.setLabel(pagina + " / " + (cp.getContadorImagen() - 1) );
 					repaint();
 					validate();
-					System.out.println(pagina);
+				
 				}
 				
 			}
@@ -64,7 +64,7 @@ public class VentanaProceso extends JFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (pagina >= 1) {	//Este ta bien
+				if (pagina >= 1) {	//Este esta bien
 					pagina--;
 					ImageIcon ic = new ImageIcon(hashPaginas.get(pagina));
 					Image imagen = ic.getImage(); 
@@ -74,7 +74,7 @@ public class VentanaProceso extends JFrame{
 					separador.setLabel(pagina + " / " + (cp.getContadorImagen() - 1) );
 					repaint();
 					validate();
-					System.out.println(pagina);
+					
 				}
 				
 			}
