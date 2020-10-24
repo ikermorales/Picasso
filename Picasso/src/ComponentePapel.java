@@ -3,51 +3,54 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.Point;
 import java.awt.Polygon;
-import java.awt.Rectangle;
 import java.awt.RenderingHints;
-import java.awt.Robot;
-import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Collections;
 
 import javax.imageio.ImageIO;
-import javax.swing.GrayFilter;
 import javax.swing.JComponent;
-import javax.swing.KeyStroke;
-import javax.swing.text.Keymap;
 
 public class ComponentePapel extends JComponent {
 
 
 	private Image imagen;
 	private Graphics2D graficos;
+	
 	private int xActual;
 	private int yActual; 
 	private int xVieja; 
 	private int yVieja;
+	
 	private static Color colorPincel;
 	private static int pincel;
-	private int tamanyo = 8; //cambiarr
+	
+	private int tamanyo = 8; //cambiar
+	
 	private int[] xcuadrado = new int[4];
 	private int[] ycuadrado = new int [4];
 	private Polygon cuadrado;
-	private int[] xcirculo = new int[4];
-	private int[] ycirculo = new int [4];
-	private Polygon circulo;
+	
 	private static int contadorImagen = 0;
-	private KeyListener listener;
+	private boolean deshaciendo = false;
+	private static ArrayList<Integer> contadorImagenMaximo = new ArrayList<>();
+	
+	private int[] xTriangulo = new int[3];
+	private int[] yTriangulo = new int [3];
+	private Polygon triangulo;
+
+	private File carpetaProcesoAnterior = new File("proceso/");
+	private File[] procesosAnteriores = carpetaProcesoAnterior.listFiles();
 
 
 	public ComponentePapel(Papel p) {
@@ -71,6 +74,18 @@ public class ComponentePapel extends JComponent {
 			public void mouseDragged(MouseEvent e) {
 				xActual = e.getX();
 				yActual = e.getY();
+				
+				File imagenEterea = new File("proceso/" + (contadorImagen) + ".jpg");
+				if (imagenEterea.exists() && !deshaciendo) {
+					Collections.sort(contadorImagenMaximo);
+					Collections.reverse(contadorImagenMaximo);
+					for (int i = contadorImagen; i <= contadorImagenMaximo.get(0) ; i++) {
+						File imagenDesviada = new File("proceso/" + i + ".jpg");
+						imagenDesviada.delete();
+					}
+				}
+				
+				deshaciendo = false;
 
 				if (graficos != null) {
 					graficos.setPaint(colorPincel);
@@ -110,6 +125,22 @@ public class ComponentePapel extends JComponent {
 						repaint();
 						xVieja = xActual;
 						yVieja = yActual;
+					}else if(pincel == 3) {
+						xTriangulo[0] = xActual;
+						yTriangulo[0] = yActual;
+
+						xTriangulo[1] = xActual + tamanyo/2;
+						yTriangulo[1] = yActual + tamanyo;
+
+						xTriangulo[2] = xActual - tamanyo/2;
+						yTriangulo[2] = yActual + tamanyo;
+
+						triangulo = new Polygon(xTriangulo, yTriangulo, 3);
+						graficos.fill(triangulo);
+						graficos.draw(triangulo);
+						repaint();
+						xVieja = xActual;
+						yVieja = yActual; 
 					}
 
 					else {
@@ -123,11 +154,16 @@ public class ComponentePapel extends JComponent {
 			public void keyPressed(KeyEvent e) {
 				if ((e.getKeyCode() == KeyEvent.VK_Z) && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0)) {
 					cargarImagenAnterior(graficos);
-				}			
+					
+				}	else if ((e.getKeyCode() == KeyEvent.VK_Y) && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0)) {
+					cargarImagenSiguiente(graficos);
+				}		
 			}
 		});
 		
-		
+		for (File file : procesosAnteriores) {
+			file.delete();
+		}
 		
 	}
 
@@ -162,6 +198,10 @@ public class ComponentePapel extends JComponent {
 			OutputStream out = new FileOutputStream(file);
 			ImageIO.write(imagen, "png", file);
 			contadorImagen++;
+			
+			if (!contadorImagenMaximo.contains(contadorImagen)) {
+				contadorImagenMaximo.add(contadorImagen);
+			}
 			out.close();
 		} catch (IOException e) {
 			System.out.println("No ha funcionado el generador de estados.");
@@ -179,7 +219,13 @@ public class ComponentePapel extends JComponent {
 				imagen = ImageIO.read(imagenAnterior);
 				g.drawImage(imagen, 0, 0, getWidth(), getHeight(), Color.BLACK, null);
 				g = imagen.createGraphics();
-				contadorImagen = contadorImagen + 1;
+				
+				deshaciendo = true;
+				contadorImagen++;
+				if (!contadorImagenMaximo.contains(contadorImagen)) {
+					contadorImagenMaximo.add(contadorImagen);
+				}
+				
 				repaint();
 
 			} catch (IOException e) {
@@ -188,7 +234,23 @@ public class ComponentePapel extends JComponent {
 		}
 	}
 
-
+	public void cargarImagenSiguiente(Graphics g) {
+		Dimension d = getSize();
+		BufferedImage imagen = new BufferedImage(d.width, d.height, BufferedImage.TYPE_INT_RGB);
+		File imagenEterea = new File("proceso/" + (contadorImagen) + ".jpg");
+		if (imagenEterea.exists() && deshaciendo) {
+			try {
+				imagen = ImageIO.read(imagenEterea);
+				g.drawImage(imagen, 0, 0, getWidth(), getHeight(), Color.BLACK, null);
+				g = imagen.createGraphics();
+				contadorImagen = contadorImagen + 1;
+				repaint();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} 
+	}
+	
 	public Image getImagen() {
 		return imagen;
 	}
@@ -249,21 +311,11 @@ public class ComponentePapel extends JComponent {
 	public Polygon getCuadrado() {
 		return cuadrado;
 	}
-	public int[] getXcirculo() {
-		return xcirculo;
-	}
-	public int[] getYcirculo() {
-		return ycirculo;
-	}
-	public Polygon getCirculo() {
-		return circulo;
-	}
+	
 	public int getContadorImagen() {
 		return contadorImagen;
 	}
-	public KeyListener getListener() {
-		return listener;
-	}
+	
 	public void setTamanyo(int tamanyo) {
 		this.tamanyo = tamanyo;
 	}
@@ -276,19 +328,9 @@ public class ComponentePapel extends JComponent {
 	public void setCuadrado(Polygon cuadrado) {
 		this.cuadrado = cuadrado;
 	}
-	public void setXcirculo(int[] xcirculo) {
-		this.xcirculo = xcirculo;
-	}
-	public void setYcirculo(int[] ycirculo) {
-		this.ycirculo = ycirculo;
-	}
-	public void setCirculo(Polygon circulo) {
-		this.circulo = circulo;
-	}
+	
 	public static void setContadorImagen(int contadorImagen) {
 		ComponentePapel.contadorImagen = contadorImagen;
-	}
-	public void setListener(KeyListener listener) {
-		this.listener = listener;
-	}
+
+}
 }

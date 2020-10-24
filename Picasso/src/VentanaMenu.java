@@ -21,7 +21,7 @@ public class VentanaMenu extends JFrame {
 	private JButton botonProceso;
 	private VentanaProceso proceso;
 	
-	public VentanaMenu(ComponentePapel cp, Papel p, Graphics g) {
+	public VentanaMenu(ComponentePapel cp, Papel p) {
 		setTitle("Menu");
 		setSize(new Dimension(310, 400));
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -33,6 +33,7 @@ public class VentanaMenu extends JFrame {
 		pincelesCombo.addItem("Bolígrafo");
 		pincelesCombo.addItem("Pixelado");
 		pincelesCombo.addItem("Suave");
+		pincelesCombo.addItem("Triangular");
 		pincelesCombo.addActionListener(new ActionListener() {
 			
 			@Override
