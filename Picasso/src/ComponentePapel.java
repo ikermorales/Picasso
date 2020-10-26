@@ -20,19 +20,20 @@ import java.util.Collections;
 
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
+import javax.swing.JOptionPane;
 
 public class ComponentePapel extends JComponent {
 
 
-	private Image imagen;
-	private Graphics2D graficos;
+	private static Image imagen;
+	private static Graphics2D graficos;
 	
 	private int xActual;
 	private int yActual; 
 	private int xVieja; 
 	private int yVieja;
 	
-	private static Color colorPincel;
+	
 	private static int pincel;
 	
 	private int tamanyo = 8; //cambiar
@@ -52,6 +53,9 @@ public class ComponentePapel extends JComponent {
 	private File carpetaProcesoAnterior = new File("proceso/");
 	private File[] procesosAnteriores = carpetaProcesoAnterior.listFiles();
 
+	private Thread hiloArcoiris;
+	private boolean rainbowActivado;
+	private ArrayList<Color> colores;
 
 	public ComponentePapel(Papel p) {
 		setDoubleBuffered(false);
@@ -88,7 +92,7 @@ public class ComponentePapel extends JComponent {
 				deshaciendo = false;
 
 				if (graficos != null) {
-					graficos.setPaint(colorPincel);
+					
 					if (pincel == 0) {	//Pincel Bolígrafo
 						graficos.drawLine(xVieja, yVieja, xActual, yActual); 
 						repaint();
@@ -179,11 +183,12 @@ public class ComponentePapel extends JComponent {
 	}
 
 
-	//TODO METODO Borrar
+	
 	public void clear() {
+		Color color = (Color) graficos.getPaint();
 		graficos.setPaint(new Color(255,255,255));
 		graficos.fillRect(0, 0, getSize().width, getSize().height);
-		graficos.setPaint(colorPincel);
+		graficos.setPaint(color);
 		repaint();
 	}
 
@@ -251,6 +256,53 @@ public class ComponentePapel extends JComponent {
 		} 
 	}
 	
+	public void dibujarRainbow() {	
+		ArrayList<Color> colores = new ArrayList<>();
+		
+		if(colores.isEmpty()) {
+			colores.add(Color.red);
+			colores.add(Color.orange);
+			colores.add(Color.yellow);
+			colores.add(Color.green);
+			colores.add(Color.cyan);
+			colores.add(Color.blue);
+			colores.add(Color.magenta);
+		}
+
+		
+		hiloArcoiris = new Thread(new Runnable() {
+			@Override
+			public void run() {
+
+				while(rainbowActivado == true) {
+
+					for (int i = 0; i < colores.size(); i++) {
+						graficos.setPaint(colores.get(i));
+						try {
+							hiloArcoiris.sleep(75);
+						} catch (InterruptedException e) {
+							JOptionPane.showMessageDialog(null, "Hubo un problema con el Thread del Arcoiris");
+						}
+					}
+			
+				}
+				
+				
+			}});
+
+	}
+	
+	
+	public void borrarTodo(Papel p){
+		Color color = (Color) graficos.getPaint();
+		graficos.setColor(Color.white);
+		graficos.fillRect(0, 0, p.getAnchura(), p.getAltura());
+		p.repaint();
+		this.repaint();
+		graficos.setPaint(color);;
+	}
+	
+	
 	public Image getImagen() {
 		return imagen;
 	}
@@ -268,9 +320,6 @@ public class ComponentePapel extends JComponent {
 	}
 	public int getyVieja() {
 		return yVieja;
-	}
-	public Color getColorPincel() {
-		return colorPincel;
 	}
 	public void setImagen(Image imagen) {
 		this.imagen = imagen;
@@ -290,9 +339,8 @@ public class ComponentePapel extends JComponent {
 	public void setyVieja(int yVieja) {
 		this.yVieja = yVieja;
 	}
-	public void setColorPincel(Color colorPincel) {
-		this.colorPincel = colorPincel;
-	}
+	
+	
 	public int getPincel() {
 		return pincel;
 	}
@@ -331,6 +379,36 @@ public class ComponentePapel extends JComponent {
 	
 	public static void setContadorImagen(int contadorImagen) {
 		ComponentePapel.contadorImagen = contadorImagen;
+	}
 
-}
+
+	public static ArrayList<Integer> getContadorImagenMaximo() {
+		return contadorImagenMaximo;
+	}
+
+
+	public static void setContadorImagenMaximo(ArrayList<Integer> contadorImagenMaximo) {
+		ComponentePapel.contadorImagenMaximo = contadorImagenMaximo;
+	}
+
+
+	public Thread getHiloArcoiris() {
+		return hiloArcoiris;
+	}
+
+
+	public void setHiloArcoiris(Thread hiloArcoiris) {
+		this.hiloArcoiris = hiloArcoiris;
+	}
+
+
+	public boolean isRainbowActivado() {
+		return rainbowActivado;
+	}
+
+
+	public void setRainbowActivado(boolean rainbowActivado) {
+		this.rainbowActivado = rainbowActivado;
+	}
+	
 }

@@ -12,6 +12,7 @@ public class Papel extends JFrame {
 		setSize(anchura, altura);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setLayout(new GridLayout(1,1));
+		setResizable(false);
 
 		compPapel = new ComponentePapel(this);
 		add(compPapel);

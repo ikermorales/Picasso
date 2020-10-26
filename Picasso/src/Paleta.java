@@ -18,7 +18,8 @@ public class Paleta extends JFrame{
 		paletaC = new JColorChooser(new ColorSelectionModel() {
 			@Override
 			public void setSelectedColor(Color color) {
-				cp.setColorPincel(color);
+				cp.setRainbowActivado(false);
+				cp.getGraficos().setPaint(color);
 				paletaC.setBackground(color); //Mostramos el color escogido.
 			}
 			@Override
