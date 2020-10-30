@@ -28,11 +28,13 @@ public class ComponentePapel extends JComponent {
 	private static Image imagen;
 	private static Graphics2D graficos;
 	
+	private static BufferedImage imagenBuff;
+	private Thread hiloBuff;
+	
 	private int xActual;
 	private int yActual; 
 	private int xVieja; 
 	private int yVieja;
-	
 	
 	private static int pincel;
 	
@@ -57,6 +59,7 @@ public class ComponentePapel extends JComponent {
 	private boolean rainbowActivado;
 	private ArrayList<Color> colores;
 
+	
 	public ComponentePapel(Papel p) {
 		setDoubleBuffered(false);
 		setFocusable(true);
@@ -68,7 +71,7 @@ public class ComponentePapel extends JComponent {
 			}
 
 			public void mouseReleased(MouseEvent e) {
-				generarEstado();
+				generarEstado(p);
 			}
 
 		});
@@ -192,24 +195,23 @@ public class ComponentePapel extends JComponent {
 		repaint();
 	}
 
-	public void generarEstado() {
-		Dimension d = getSize();
-		BufferedImage imagen = new BufferedImage(d.width, d.height, BufferedImage.TYPE_INT_RGB);
-		Graphics2D g2d = imagen.createGraphics();
-		this.print(g2d);
-		g2d.dispose();
+	
+	public void generarEstado(Papel p) {
+		BufferedImage imagen = new BufferedImage((p.getAnchura() - 16), (p.getAltura() - 39), BufferedImage.TYPE_INT_RGB);
+		this.paint(imagen.createGraphics());
+
 		try {
 			File file = new File("proceso/" + contadorImagen + ".jpg");
 			OutputStream out = new FileOutputStream(file);
-			ImageIO.write(imagen, "png", file);
+			ImageIO.write(imagen, "png", file);	
 			contadorImagen++;
-			
 			if (!contadorImagenMaximo.contains(contadorImagen)) {
 				contadorImagenMaximo.add(contadorImagen);
 			}
 			out.close();
+			
 		} catch (IOException e) {
-			System.out.println("No ha funcionado el generador de estados.");
+			System.out.println("No ha funcionado el generador de estados");
 		}
 	}
 	
@@ -284,12 +286,8 @@ public class ComponentePapel extends JComponent {
 							JOptionPane.showMessageDialog(null, "Hubo un problema con el Thread del Arcoiris");
 						}
 					}
-			
 				}
-				
-				
 			}});
-
 	}
 	
 	
@@ -300,6 +298,25 @@ public class ComponentePapel extends JComponent {
 		p.repaint();
 		this.repaint();
 		graficos.setPaint(color);;
+	}
+	
+	
+	public void guardarDibujo(Papel p, String usuarioEscogido, String nombreDibujo) {
+		imagenBuff = new BufferedImage(p.getWidth(), p.getHeight(), BufferedImage.TYPE_INT_RGB);
+		Graphics2D g2d = imagenBuff.createGraphics();
+		this.print(g2d);
+		g2d.dispose();
+		try {
+			File file = new File("proceso/" + (contadorImagen - 1) + ".jpg");
+			imagenBuff = ImageIO.read(file);
+			file = new File(usuarioEscogido + "/galeria/" + nombreDibujo + ".jpg");
+			OutputStream out = new FileOutputStream(file);
+			ImageIO.write(imagenBuff, "png", file);	
+			JOptionPane.showMessageDialog(null, nombreDibujo + ".jpg guardado correctamente en la galería de " + usuarioEscogido);
+			out.close();
+		} catch (IOException e) {
+			JOptionPane.showMessageDialog(null, "No se pudo guardar la imagen.");
+		}
 	}
 	
 	

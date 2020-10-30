@@ -17,6 +17,7 @@ public class VentanaTexto extends JFrame {
 	private int yy=0;
 	private int x=0;
 	private int y=0;
+	private Robot robot;
 
 	public VentanaTexto(ComponentePapel cp, Papel p) {
 		setTitle("Insertar Texto");
@@ -41,6 +42,7 @@ public class VentanaTexto extends JFrame {
 				insertarTexto(cp, p);
 				hiloPrevisualizador.stop();
 				dispose();
+				clickarEstado(cp);
 			}
 		});
 		add(botonAceptar);
@@ -128,6 +130,22 @@ public class VentanaTexto extends JFrame {
 	}
 
 
+	public void clickarEstado(ComponentePapel cp){
+		try {
+			Color colorAnterior = cp.getGraficos().getColor();
+			cp.getGraficos().setPaint(new Color(255,255,255,0));
+			robot = new Robot();
+			robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+			robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+			Thread.sleep(20);
+	        robot.mouseRelease(InputEvent.BUTTON1_MASK);
+	    	cp.getGraficos().setPaint(colorAnterior);
+		} catch (AWTException e1) {
+			e1.printStackTrace();
+		} catch (InterruptedException e2) {
+			e2.printStackTrace();
+		}
+	}
 
 
 	public JTextField getTexto() {

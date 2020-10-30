@@ -29,8 +29,11 @@ public class VentanaMenu extends JFrame {
 
 	private VentanaTexto ventanaTexto;
 	
+	private JButton botonGuardar;
+	private VentanaGuardar ventanaGuardar;
+	
 
-	public VentanaMenu(ComponentePapel cp, Papel p) {
+	public VentanaMenu(ComponentePapel cp, Papel p, String usuario) {
 		setTitle("Menu");
 		setSize(new Dimension(310, 400));
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -111,6 +114,18 @@ public class VentanaMenu extends JFrame {
 			}
 		});
 		add(botonTexto);
+		
+		
+		botonGuardar = new JButton("Guardar");
+		botonGuardar.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				ventanaGuardar = new VentanaGuardar(p, cp, usuario);
+				
+			}
+		});
+		add(botonGuardar);
 
 
 		setVisible(true);

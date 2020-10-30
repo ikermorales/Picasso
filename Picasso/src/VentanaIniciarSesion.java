@@ -106,7 +106,7 @@ public class VentanaIniciarSesion extends JFrame {
 						public void actionPerformed(ActionEvent e) {
 							papel = new Papel();
 							componente = new ComponentePapel(papel);
-							menu = new VentanaMenu(componente, papel);
+							menu = new VentanaMenu(componente, papel, usuarioEscogido);
 							dispose();
 							
 						}
