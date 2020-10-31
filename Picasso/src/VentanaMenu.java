@@ -8,6 +8,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JSlider;
 import javax.swing.border.TitledBorder;
 
 public class VentanaMenu extends JFrame {
@@ -31,6 +32,9 @@ public class VentanaMenu extends JFrame {
 	
 	private JButton botonGuardar;
 	private VentanaGuardar ventanaGuardar;
+	
+	private JPanel panelTamanyo;
+	private JSlider sliderTamanyo;
 	
 
 	public VentanaMenu(ComponentePapel cp, Papel p, String usuario) {
