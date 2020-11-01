@@ -258,6 +258,23 @@ public class ComponentePapel extends JComponent {
 		} 
 	}
 	
+	public void cargarImagenConcreta(Integer i, Papel p) {
+		BufferedImage imagen = new BufferedImage((p.getAnchura() - 16), (p.getAltura() - 39), BufferedImage.TYPE_INT_RGB);
+		File imagenEterea = new File("proceso/" + (i) + ".jpg");
+		if (imagenEterea.exists()) {
+			try {
+				imagen = ImageIO.read(imagenEterea);
+				graficos.drawImage(imagen, 0, 0, (p.getAnchura() - 16), (p.getAltura() - 39), Color.BLACK, null);
+				this.paint(imagen.createGraphics());
+				contadorImagen = i + 1;
+				deshaciendo = true;
+				repaint();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} 
+	}
+	
 	public void dibujarRainbow() {	
 		ArrayList<Color> colores = new ArrayList<>();
 		

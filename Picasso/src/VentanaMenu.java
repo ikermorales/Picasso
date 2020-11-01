@@ -80,7 +80,7 @@ public class VentanaMenu extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				proceso = new VentanaProceso(cp);
+				proceso = new VentanaProceso(cp, p);
 
 
 			}
