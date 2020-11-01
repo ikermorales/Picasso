@@ -22,7 +22,7 @@ public class VentanaGuardar extends JFrame {
 		cajaNombre = new JTextField();
 		add(cajaNombre, BorderLayout.NORTH);
 
-		confirmar = new JButton("Confirmar");
+		confirmar = new JButton("Confirmar", new ImageIcon("iconos/guardar.png"));
 		confirmar.addActionListener(new ActionListener() {
 
 			@Override

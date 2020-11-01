@@ -52,7 +52,7 @@ public class VentanaIniciarSesion extends JFrame {
 		panelDecorativo = new JPanel();
 		panelDecorativo.setLayout(new GridLayout(1,1));
 		panelDecorativo.setBorder(BorderFactory.createEmptyBorder(10, 0, 20, 0)); //TOC
-		labelDecorativo = new JLabel(new ImageIcon("login.png"));
+		labelDecorativo = new JLabel(new ImageIcon("iconos/login.png"));
 		panelDecorativo.add(labelDecorativo);
 		add(panelDecorativo);
 
