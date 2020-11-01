@@ -92,12 +92,14 @@ public class VentanaMenu extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				cp.setRainbowActivado(true);
-				cp.dibujarRainbow();
-				cp.getHiloArcoiris().start();
-				
+				if(!cp.isRainbowActivado()) {
+					cp.setRainbowActivado(true);
+					cp.dibujarRainbow();
+					cp.getHiloArcoiris().start();
+				}	
 			}
 		});
+		
 		add(botonArcoiris);
 		
 		
