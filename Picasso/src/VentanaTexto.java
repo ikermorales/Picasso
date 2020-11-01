@@ -34,19 +34,6 @@ public class VentanaTexto extends JFrame {
 		texto.setPreferredSize(new Dimension(275,25));
 		add(texto);
 
-		botonAceptar = new JButton("Aceptar");
-		botonAceptar.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				insertarTexto(cp, p);
-				hiloPrevisualizador.stop();
-				dispose();
-				clickarEstado(cp);
-			}
-		});
-		add(botonAceptar);
-
 		botonCancelar = new JButton("Cancelar");
 		botonCancelar.addActionListener(new ActionListener() {
 
@@ -106,10 +93,8 @@ public class VentanaTexto extends JFrame {
 			@Override
 			public void run() {
 				while(true) {
-					labelTexto.setText(texto.getText());
-					labelTexto.setForeground((Color) cp.getGraficos().getPaint());
-					panelPrevisualizacion.repaint();
-					panelPrevisualizacion.validate();
+					botonAceptar.setForeground((Color) cp.getGraficos().getPaint());
+					botonAceptar.setLabel(texto.getText());	
 					repaint();
 					validate();
 
