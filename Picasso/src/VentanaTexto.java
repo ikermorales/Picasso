@@ -58,13 +58,7 @@ public class VentanaTexto extends JFrame {
 		});
 		add(botonCancelar);
 
-		panelPrevisualizacion = new JPanel();
-		panelPrevisualizacion.setPreferredSize(new Dimension(275, 100));
-		panelPrevisualizacion.setBackground(new Color(1.0f,1.0f,1.0f,0.1f));
-		panelPrevisualizacion.setBorder(new LineBorder(Color.LIGHT_GRAY));
-		panelPrevisualizacion.setLayout(new GridBagLayout());
-		panelPrevisualizacion.add(labelTexto);
-		add(panelPrevisualizacion);
+		
 
 
 		addMouseMotionListener(new MouseMotionAdapter() {
