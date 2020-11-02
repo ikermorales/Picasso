@@ -12,6 +12,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -27,27 +29,27 @@ public class ComponentePapel extends JComponent {
 
 	private static Image imagen;
 	private static Graphics2D graficos;
-	
+
 	private static BufferedImage imagenBuff;
 	private Thread hiloBuff;
-	
+
 	private int xActual;
 	private int yActual; 
 	private int xVieja; 
 	private int yVieja;
-	
+
 	private static int pincel;
-	
+
 	private static int tamanyo = 8;
-	
+
 	private int[] xcuadrado = new int[4];
 	private int[] ycuadrado = new int [4];
 	private Polygon cuadrado;
-	
-	private static int contadorImagen = 0;
+
+	private static int contadorImagen = 1;
 	private boolean deshaciendo = false;
 	private static ArrayList<Integer> contadorImagenMaximo = new ArrayList<>();
-	
+
 	private int[] xTriangulo = new int[3];
 	private int[] yTriangulo = new int [3];
 	private Polygon triangulo;
@@ -59,7 +61,10 @@ public class ComponentePapel extends JComponent {
 	private boolean rainbowActivado;
 	private ArrayList<Color> colores;
 
-	
+	private int[] corazonTriangulo1 = new int[3];
+	private int[] corazonTriangulo2 = new int [3];
+	private Polygon corazon;
+
 	public ComponentePapel(Papel p) {
 		setDoubleBuffered(false);
 		setFocusable(true);
@@ -81,7 +86,7 @@ public class ComponentePapel extends JComponent {
 			public void mouseDragged(MouseEvent e) {
 				xActual = e.getX();
 				yActual = e.getY();
-				
+
 				File imagenEterea = new File("proceso/" + (contadorImagen) + ".jpg");
 				if (imagenEterea.exists() && !deshaciendo) {
 					Collections.sort(contadorImagenMaximo);
@@ -91,11 +96,11 @@ public class ComponentePapel extends JComponent {
 						imagenDesviada.delete();
 					}
 				}
-				
+
 				deshaciendo = false;
 
 				if (graficos != null) {
-					
+
 					if (pincel == 0) {	//Pincel Bolígrafo
 						graficos.drawLine(xVieja, yVieja, xActual, yActual); 
 						repaint();
@@ -125,7 +130,7 @@ public class ComponentePapel extends JComponent {
 						repaint();
 						xVieja = xActual;
 						yVieja = yActual; 
-						
+
 					} 
 					else if(pincel== 2) {
 						graficos.fillOval(xActual, yActual, tamanyo, tamanyo);
@@ -148,33 +153,60 @@ public class ComponentePapel extends JComponent {
 						repaint();
 						xVieja = xActual;
 						yVieja = yActual; 
-					}
 
-					else {
+
+					} else if(pincel == 4){ //Pincel Corazón
+						corazonTriangulo1[0] = xActual - 2*tamanyo/34;
+						corazonTriangulo1[1] = xActual + tamanyo + 2*tamanyo/34;
+						corazonTriangulo1[2] = (xActual - 2*tamanyo/34 + xActual + tamanyo + 2*tamanyo/34)/2;
+
+						corazonTriangulo2[0] = yActual + tamanyo - 2*tamanyo/3;
+						corazonTriangulo2[1] = yActual + tamanyo - 2*tamanyo/3;
+						corazonTriangulo2[2] = yActual + tamanyo;
+
+						graficos.fillOval(xActual - tamanyo/12, yActual, tamanyo/2 + tamanyo/6, tamanyo/2); 
+						graficos.fillOval(xActual + tamanyo/2 - tamanyo/12,	yActual, tamanyo/2 + tamanyo/6, tamanyo/2);
+
+						corazon = new Polygon(corazonTriangulo1, corazonTriangulo2, corazonTriangulo1.length);
+						graficos.fill(corazon);
+						graficos.draw(corazon);
+						repaint();
+						xVieja = xActual;
+						yVieja = yActual; 
+
+
+					} else {
 						System.out.println("no hay mas pinceles");
 					}
 				}
 			}
 		});
-		
+
 		addKeyListener(new KeyAdapter() {
 			public void keyPressed(KeyEvent e) {
 				if ((e.getKeyCode() == KeyEvent.VK_Z) && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0)) {
-					cargarImagenAnterior(graficos);
-					
+					cargarImagenAnterior(p);
+
 				}	else if ((e.getKeyCode() == KeyEvent.VK_Y) && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0)) {
-					cargarImagenSiguiente(graficos);
+					cargarImagenSiguiente(p);
 				}		
 			}
 		});
-		
+
+		//INIT
 		for (File file : procesosAnteriores) {
-			file.delete();
+			if (!file.getName().equals("0.jpg")) {
+				file.delete();
+			}
 		}
+
 		
 	}
 
 
+	
+	
+	
 	protected void paintComponent(Graphics g) {
 		if (imagen == null) {
 			imagen = createImage(getSize().width, getSize().height);
@@ -185,8 +217,8 @@ public class ComponentePapel extends JComponent {
 		g.drawImage(imagen, 0, 0, null);
 	}
 
-
 	
+
 	public void clear() {
 		Color color = (Color) graficos.getPaint();
 		graficos.setPaint(new Color(255,255,255));
@@ -195,6 +227,7 @@ public class ComponentePapel extends JComponent {
 		repaint();
 	}
 
+	
 	
 	public void generarEstado(Papel p) {
 		BufferedImage imagen = new BufferedImage((p.getAnchura() - 16), (p.getAltura() - 39), BufferedImage.TYPE_INT_RGB);
@@ -209,30 +242,29 @@ public class ComponentePapel extends JComponent {
 				contadorImagenMaximo.add(contadorImagen);
 			}
 			out.close();
-			
+
 		} catch (IOException e) {
 			System.out.println("No ha funcionado el generador de estados");
 		}
 	}
+
 	
 
-	public void cargarImagenAnterior(Graphics g) {
+	public void cargarImagenAnterior(Papel p) {
 		if(contadorImagen >= 2) {
-			Dimension d = getSize();
-			BufferedImage imagen = new BufferedImage(d.width, d.height, BufferedImage.TYPE_INT_RGB);
+			BufferedImage imagen = new BufferedImage((p.getAnchura() - 16), (p.getAltura() - 39), BufferedImage.TYPE_INT_RGB);
 			contadorImagen = contadorImagen - 2;
 			File imagenAnterior = new File("proceso/" + contadorImagen + ".jpg");
 			try {
 				imagen = ImageIO.read(imagenAnterior);
-				g.drawImage(imagen, 0, 0, getWidth(), getHeight(), Color.BLACK, null);
-				g = imagen.createGraphics();
-				
+				graficos.drawImage(imagen, 0, 0, (p.getAnchura() - 16), (p.getAltura() - 39), Color.BLACK, null);
+				this.paint(imagen.createGraphics());
 				deshaciendo = true;
 				contadorImagen++;
 				if (!contadorImagenMaximo.contains(contadorImagen)) {
 					contadorImagenMaximo.add(contadorImagen);
 				}
-				
+
 				repaint();
 
 			} catch (IOException e) {
@@ -241,15 +273,16 @@ public class ComponentePapel extends JComponent {
 		}
 	}
 
-	public void cargarImagenSiguiente(Graphics g) {
-		Dimension d = getSize();
-		BufferedImage imagen = new BufferedImage(d.width, d.height, BufferedImage.TYPE_INT_RGB);
+	
+	
+	public void cargarImagenSiguiente(Papel p) {
+		BufferedImage imagen = new BufferedImage((p.getAnchura() - 16), (p.getAltura() - 39), BufferedImage.TYPE_INT_RGB);
 		File imagenEterea = new File("proceso/" + (contadorImagen) + ".jpg");
 		if (imagenEterea.exists() && deshaciendo) {
 			try {
 				imagen = ImageIO.read(imagenEterea);
-				g.drawImage(imagen, 0, 0, getWidth(), getHeight(), Color.BLACK, null);
-				g = imagen.createGraphics();
+				graficos.drawImage(imagen, 0, 0, (p.getAnchura() - 16), (p.getAltura() - 39), Color.BLACK, null);
+				this.paint(imagen.createGraphics());
 				contadorImagen = contadorImagen + 1;
 				repaint();
 			} catch (IOException e) {
@@ -257,6 +290,8 @@ public class ComponentePapel extends JComponent {
 			}
 		} 
 	}
+
+	
 	
 	public void cargarImagenConcreta(Integer i, Papel p) {
 		BufferedImage imagen = new BufferedImage((p.getAnchura() - 16), (p.getAltura() - 39), BufferedImage.TYPE_INT_RGB);
@@ -274,10 +309,12 @@ public class ComponentePapel extends JComponent {
 			}
 		} 
 	}
+
+	
 	
 	public void dibujarRainbow() {	
 		ArrayList<Color> colores = new ArrayList<>();
-		
+
 		if(colores.isEmpty()) {
 			colores.add(Color.red);
 			colores.add(Color.orange);
@@ -288,7 +325,6 @@ public class ComponentePapel extends JComponent {
 			colores.add(Color.magenta);
 		}
 
-		
 		hiloArcoiris = new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -306,17 +342,37 @@ public class ComponentePapel extends JComponent {
 				}
 			}});
 	}
-	
+
+
 	
 	public void borrarTodo(Papel p){
 		Color color = (Color) graficos.getPaint();
 		graficos.setColor(Color.white);
 		graficos.fillRect(0, 0, p.getAnchura(), p.getAltura());
 		p.repaint();
+		FileInputStream is;
+		FileOutputStream os;
+		try {
+			is = new FileInputStream(new File("proceso/0.jpg"));
+			contadorImagen++;
+			os = new FileOutputStream(new File("proceso/" + (contadorImagen-1) + ".jpg"));
+			byte[] buffer = new byte[1024];
+			int length;
+			while ((length = is.read(buffer)) > 0) {
+				os.write(buffer, 0, length);
+			} 
+			is.close();
+			os.close();
+		} catch (FileNotFoundException e) {
+			JOptionPane.showMessageDialog(null, "Hubo un problema con el estado al borrar todo.");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		this.repaint();
 		graficos.setPaint(color);;
 	}
-	
+
+
 	
 	public void guardarDibujo(Papel p, String usuarioEscogido, String nombreDibujo) {
 		imagenBuff = new BufferedImage(p.getWidth(), p.getHeight(), BufferedImage.TYPE_INT_RGB);
@@ -335,8 +391,10 @@ public class ComponentePapel extends JComponent {
 			JOptionPane.showMessageDialog(null, "No se pudo guardar la imagen.");
 		}
 	}
+
 	
 	
+
 	public Image getImagen() {
 		return imagen;
 	}
@@ -373,8 +431,8 @@ public class ComponentePapel extends JComponent {
 	public void setyVieja(int yVieja) {
 		this.yVieja = yVieja;
 	}
-	
-	
+
+
 	public int getPincel() {
 		return pincel;
 	}
@@ -393,11 +451,11 @@ public class ComponentePapel extends JComponent {
 	public Polygon getCuadrado() {
 		return cuadrado;
 	}
-	
+
 	public int getContadorImagen() {
 		return contadorImagen;
 	}
-	
+
 	public void setTamanyo(int tamanyo) {
 		this.tamanyo = tamanyo;
 	}
@@ -410,7 +468,7 @@ public class ComponentePapel extends JComponent {
 	public void setCuadrado(Polygon cuadrado) {
 		this.cuadrado = cuadrado;
 	}
-	
+
 	public static void setContadorImagen(int contadorImagen) {
 		ComponentePapel.contadorImagen = contadorImagen;
 	}
@@ -444,5 +502,5 @@ public class ComponentePapel extends JComponent {
 	public void setRainbowActivado(boolean rainbowActivado) {
 		this.rainbowActivado = rainbowActivado;
 	}
-	
+
 }
