@@ -55,6 +55,7 @@ public class VentanaMenu extends JFrame {
 		pincelesCombo.addItem("Pixelado");
 		pincelesCombo.addItem("Suave");
 		pincelesCombo.addItem("Triangular");
+		pincelesCombo.addItem("Corazón");
 		pincelesCombo.addActionListener(new ActionListener() {
 
 			@Override
@@ -153,7 +154,6 @@ public class VentanaMenu extends JFrame {
 			public void stateChanged(ChangeEvent e) {
 				cp.setTamanyo(sliderTamanyo.getValue());
 				sliderTamanyo.setBorder(new TitledBorder("Tamaño: " + sliderTamanyo.getValue()));
-		
 			}
 		});
 		panelTamanyo = new JPanel();

@@ -1,4 +1,3 @@
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,7 +7,9 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
+
 public class VentanaProceso extends JFrame{
+	
 	private JPanel panelProceso;
 	private JLabel imagenProceso = new JLabel();
 	private JPanel panelSeleccion;
@@ -19,7 +20,6 @@ public class VentanaProceso extends JFrame{
 	private HashMap<Integer, String> hashPaginas = new HashMap<>();
 
 
-
 	public VentanaProceso(ComponentePapel cp, Papel p) {
 		setTitle("Proceso");
 		setSize(240, 385);
@@ -28,24 +28,27 @@ public class VentanaProceso extends JFrame{
 		setLayout(new FlowLayout());
 
 		panelProceso = new JPanel();
-		panelProceso.setPreferredSize(new Dimension(400,600));
+		panelProceso.setPreferredSize(new Dimension(200,300));
 		add(panelProceso);
 
 		panelSeleccion = new JPanel();
-		panelProceso.setPreferredSize(new Dimension(200,300));
+		panelSeleccion.setPreferredSize(new Dimension(400,37));
 		panelSeleccion.setBorder(new LineBorder(Color.lightGray));
 		add(panelSeleccion);
 
-		for (int i = 0; i <= 4; i++) { // cp.getContadorImagen()
+
+		for (int i = 0; i < cp.getContadorImagen(); i++) { 
 			hashPaginas.put(i, "proceso/" + i + ".jpg");
 		}
 
+		
 		avanzar = new JButton(">");
 		avanzar.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if(pagina < cp.getContadorImagen() - 1) {
+
 					pagina++;
 					ImageIcon ic = new ImageIcon(hashPaginas.get(pagina));
 					Image imagen = ic.getImage(); 
@@ -57,9 +60,10 @@ public class VentanaProceso extends JFrame{
 					validate();
 
 				}
-
 			}
 		});
+
+
 		retroceder = new JButton("<");
 		retroceder.addActionListener(new ActionListener() {
 
@@ -76,15 +80,16 @@ public class VentanaProceso extends JFrame{
 					validate();
 
 				}
-
 			}
 		});
+
 
 		separador = new JButton(pagina + " /" + (cp.getContadorImagen() - 1) ); 
 		panelSeleccion.add(retroceder);
 		panelSeleccion.add(separador);
 		panelSeleccion.add(avanzar);
 		panelProceso.add(imagenProceso);
+
 		separador.addActionListener(new ActionListener() {
 
 			@Override
@@ -106,6 +111,5 @@ public class VentanaProceso extends JFrame{
 
 		setVisible(true);
 	}
-
 
 }

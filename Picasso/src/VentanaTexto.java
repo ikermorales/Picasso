@@ -6,7 +6,6 @@ import javax.swing.text.html.HTMLDocument.HTMLReader.BlockAction;
 
 public class VentanaTexto extends JFrame {
 
-
 	private JTextField texto;
 	private JButton botonAceptar;
 	private JButton botonCancelar;
@@ -19,6 +18,7 @@ public class VentanaTexto extends JFrame {
 	private int y=0;
 	private Robot robot;
 
+	
 	public VentanaTexto(ComponentePapel cp, Papel p) {
 		setTitle("Insertar Texto");
 		setSize(300,200);
@@ -104,11 +104,13 @@ public class VentanaTexto extends JFrame {
 		});
 		hiloPrevisualizador.start();
 
-
-
+		
 		setVisible(true);
 	}
 
+	
+	
+	
 
 	public void insertarTexto(ComponentePapel cp, Papel p) {
 		this.getLocation();
@@ -128,6 +130,7 @@ public class VentanaTexto extends JFrame {
 		}
 	}
 
+	
 
 	public void clickarEstado(ComponentePapel cp){
 		try {
@@ -146,6 +149,9 @@ public class VentanaTexto extends JFrame {
 		}
 	}
 
+	
+	
+	
 
 	public JTextField getTexto() {
 		return texto;

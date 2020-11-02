@@ -1,8 +1,9 @@
-import java.awt.Color;
+import java.awt.Color; 
 import java.awt.FlowLayout;
 
 import javax.swing.JColorChooser;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.colorchooser.ColorSelectionModel;
 
 
@@ -13,7 +14,6 @@ public class Paleta extends JFrame{
 		setTitle("Paleta de colores");
 		setSize(660,275);
 		setVisible(true);
-		
 		
 		paletaC = new JColorChooser(new ColorSelectionModel() {
 			@Override
@@ -33,6 +33,7 @@ public class Paleta extends JFrame{
 			public void addChangeListener(javax.swing.event.ChangeListener listener) {
 			}
 		});
+		paletaC.setPreviewPanel(new JPanel());
 		setResizable(false);
 		add(paletaC);
 	}
