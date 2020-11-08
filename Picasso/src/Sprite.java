@@ -2,13 +2,14 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Polygon;
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.sound.sampled.Line;
 
-public class Sprite {
+public class Sprite implements Serializable{
 	protected int x;
 	protected int y;
 	private int xV;

@@ -62,7 +62,7 @@ public class ComponentePapel extends JComponent {
 
 	private Thread hiloArcoiris;
 	private boolean rainbowActivado;
-	private ArrayList<Color> colores;
+	private static ArrayList<Color> colores = new ArrayList<>();;
 
 	private ArrayList<String> pinceles;
 	private ArrayList<Sprite> dibujos;
@@ -80,7 +80,8 @@ public class ComponentePapel extends JComponent {
 	private VentanaEdicionTexto ventanaEdicionTexto;
 	
 	private static HashMap<Integer, ArrayList<ArrayList<Sprite>>> hashDibujos;
-
+	
+	
 	public ComponentePapel(Papel p) {
 
 		setDoubleBuffered(false);
@@ -331,7 +332,7 @@ public class ComponentePapel extends JComponent {
 			}
 			
 			OutputStream out = new FileOutputStream(file);
-			ImageIO.write(imagen, "png", file);	
+			ImageIO.write(imagen, "jpg", file);	
 			contadorImagen++;
 			if (!contadorImagenMaximo.contains(contadorImagen)) {
 				contadorImagenMaximo.add(contadorImagen);
@@ -344,107 +345,7 @@ public class ComponentePapel extends JComponent {
 	}
 
 
-
-
-
-
-	/*
-		if ((e.getKeyCode() == KeyEvent.VK_Z) && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0)) {
-					cargarImagenAnterior(p);
-		} else if ((e.getKeyCode() == KeyEvent.VK_Y) && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0)) {
-					//cargarImagenSiguiente(p);
-		} 
-	
-	
-	public void cargarImagenAnterior(Papel p) {
-		for (Iterator<ArrayList<Sprite>> spritesArrayIterador = dibujosGrandes.iterator(); spritesArrayIterador.hasNext();) {
-
-			try {
-				ArrayList<Sprite> sprites = spritesArrayIterador.next();
-				if(!spritesArrayIterador.hasNext()) {
-					spritesArrayIterador.remove();
-					generarEstado(p);
-					contadorImagen-=2;
-				} 
-				
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			
-			forRepaint();
-		}
-		deshaciendo = true;
-		contadorImagen++;
-	}
-
-	
-	
-	
-	
-	
-	public void cargarImagenAnterior(Papel p) {
-		if(contadorImagen >= 2) {
-			BufferedImage imagen = new BufferedImage((p.getAnchura() - 16), (p.getAltura() - 39), BufferedImage.TYPE_INT_RGB);
-			contadorImagen = contadorImagen - 2;
-			File imagenAnterior = new File("proceso/" + contadorImagen + ".jpg");
-			try {
-				imagen = ImageIO.read(imagenAnterior);
-				graficos.drawImage(imagen, 0, 0, getWidth(), getHeight(), Color.BLACK, null);
-				this.paint(imagen.createGraphics());
-				deshaciendo = true;
-				contadorImagen++;
-
-				if (!contadorImagenMaximo.contains(contadorImagen)) {
-					contadorImagenMaximo.add(contadorImagen);
-				}
-
-				repaint();
-
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-
-	public void cargarImagenSiguiente(Papel p) {
-		BufferedImage imagen = new BufferedImage((p.getAnchura() - 16), (p.getAltura() - 39), BufferedImage.TYPE_INT_RGB);
-		File imagenEterea = new File("proceso/" + (contadorImagen) + ".jpg");
-		if (imagenEterea.exists() && deshaciendo) {
-			try {
-				imagen = ImageIO.read(imagenEterea);
-				graficos.drawImage(imagen, 0, 0, getWidth(), getHeight(), Color.BLACK, null);
-				this.paint(imagen.createGraphics());
-				contadorImagen++;
-				repaint();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		} 
-	}
-
-
-	public void cargarImagenConcreta(Integer i, Papel p) {
-		BufferedImage imagen = new BufferedImage((p.getAnchura() - 16), (p.getAltura() - 39), BufferedImage.TYPE_INT_RGB);
-		File imagenEterea = new File("proceso/" + (i) + ".jpg");
-		if (imagenEterea.exists()) {
-			try {
-				imagen = ImageIO.read(imagenEterea);
-				graficos.drawImage(imagen, 0, 0, (p.getAnchura() - 16), (p.getAltura() - 39), Color.BLACK, null);
-				this.paint(imagen.createGraphics());
-				contadorImagen = i + 1;
-				deshaciendo = true;
-				repaint();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		} 
-	}
-	 */
-
-
 	public void dibujarRainbow() {	
-		ArrayList<Color> colores = new ArrayList<>();
 
 		if(colores.isEmpty()) {
 			colores.add(Color.red);
@@ -504,29 +405,6 @@ public class ComponentePapel extends JComponent {
 		this.repaint();
 		graficos.setColor(colorActual);
 	}
-
-
-
-	public void guardarDibujo(Papel p, String usuarioEscogido, String nombreDibujo) {
-		imagenBuff = new BufferedImage(p.getWidth(), p.getHeight(), BufferedImage.TYPE_INT_RGB);
-		Graphics2D g2d = imagenBuff.createGraphics();
-		this.print(g2d);
-		g2d.dispose();
-		try {
-			File file = new File("proceso/" + (contadorImagen - 1) + ".jpg");
-			imagenBuff = ImageIO.read(file);
-			file = new File(usuarioEscogido + "/galeria/" + nombreDibujo + ".jpg");
-			OutputStream out = new FileOutputStream(file);
-			ImageIO.write(imagenBuff, "png", file);	
-			JOptionPane.showMessageDialog(null, nombreDibujo + ".jpg guardado correctamente en la galería de " + usuarioEscogido);
-			out.close();
-		} catch (IOException e) {
-			JOptionPane.showMessageDialog(null, "No se pudo guardar la imagen.");
-		}
-	}
-
-
-
 
 
 	public static Image getImagen() {
@@ -690,7 +568,7 @@ public class ComponentePapel extends JComponent {
 
 
 
-	public static void setContadorImagen(int contadorImagen) {
+	public void setContadorImagen(int contadorImagen) {
 		ComponentePapel.contadorImagen = contadorImagen;
 	}
 

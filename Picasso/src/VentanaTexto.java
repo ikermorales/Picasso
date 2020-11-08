@@ -1,4 +1,4 @@
-import java.awt.*;
+import java.awt.*; 
 import java.awt.event.*;
 import java.util.ArrayList;
 
@@ -6,7 +6,6 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.text.html.HTMLDocument.HTMLReader.BlockAction;
 
-import org.omg.Messaging.SyncScopeHelper;
 
 public class VentanaTexto extends JFrame {
 
