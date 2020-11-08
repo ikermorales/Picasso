@@ -1,10 +1,15 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.text.html.HTMLDocument.HTMLReader.BlockAction;
 
+import org.omg.Messaging.SyncScopeHelper;
+
 public class VentanaTexto extends JFrame {
+
 
 	private JTextField texto;
 	private JButton botonAceptar;
@@ -12,13 +17,24 @@ public class VentanaTexto extends JFrame {
 	private JPanel panelPrevisualizacion;
 	private Thread hiloPrevisualizador;
 	private JLabel labelTexto = new JLabel();
+	
 	private int xx=0;
 	private int yy=0;
 	private int x=0;
 	private int y=0;
-	private Robot robot;
-
 	
+	private Robot robot;
+	
+	private int xPapel;
+	private int yPapel;
+	           
+	private int xVentanaTexto;
+	private int yVentaTexto;
+	           
+	private int xFinal;
+	private int yFinal;
+	
+
 	public VentanaTexto(ComponentePapel cp, Papel p) {
 		setTitle("Insertar Texto");
 		setSize(300,200);
@@ -27,6 +43,7 @@ public class VentanaTexto extends JFrame {
 		setBackground(new Color(1.0f,1.0f,1.0f,0.1f));
 		setLayout(new FlowLayout());
 		setLocationRelativeTo(null);
+		setFocusable(false);
 
 
 		texto = new JTextField();
@@ -34,17 +51,20 @@ public class VentanaTexto extends JFrame {
 		texto.setPreferredSize(new Dimension(275,25));
 		add(texto);
 
+		
 		botonCancelar = new JButton("Cancelar");
 		botonCancelar.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				dispose();
+				cp.getTopLevelAncestor().requestFocus();
 
 			}
 		});
 		add(botonCancelar);
-
+		
+		
 		panelPrevisualizacion = new JPanel();
 		panelPrevisualizacion.setPreferredSize(new Dimension(275, 100));
 		panelPrevisualizacion.setBackground(new Color(1.0f,1.0f,1.0f,0.1f));
@@ -61,7 +81,10 @@ public class VentanaTexto extends JFrame {
 				insertarTexto(cp, p);
 				hiloPrevisualizador.stop();
 				dispose();
-				clickarEstado(cp);
+				p.toFront();
+				p.repaint();
+				cp.forRepaint();
+				cp.generarEstado(p);
 			}
 		});
 		add(panelPrevisualizacion);
@@ -93,8 +116,10 @@ public class VentanaTexto extends JFrame {
 			@Override
 			public void run() {
 				while(true) {
+					
 					botonAceptar.setForeground((Color) cp.getGraficos().getPaint());
-					botonAceptar.setLabel(texto.getText());	
+					botonAceptar.setLabel(texto.getText());
+					
 					repaint();
 					validate();
 
@@ -104,13 +129,10 @@ public class VentanaTexto extends JFrame {
 		});
 		hiloPrevisualizador.start();
 
-		
+
 		setVisible(true);
 	}
 
-	
-	
-	
 
 	public void insertarTexto(ComponentePapel cp, Papel p) {
 		this.getLocation();
@@ -119,39 +141,28 @@ public class VentanaTexto extends JFrame {
 			cp.setRainbowActivado(false);
 			rainbowEstaba = true;
 		}
-		cp.getGraficos().drawString(getTexto().getText(), 
-				(int) (this.getLocation().getX() - p.getLocation().getX() + 127),
-				(int) (this.getLocation().getY() - p.getLocation().getY() + 90)); //para cuadrarlo con la previsualizacion
+		int xPapel = (int) p.getLocationOnScreen().getX();
+		int yPapel= (int) p.getLocationOnScreen().getY();
 		
+		int xVentanaTexto = (int) this.getLocationOnScreen().getX();
+		int yVentanaTexto = (int) this.getLocationOnScreen().getY();
+		
+		int xFinal = xVentanaTexto - xPapel + 128; //
+		int yFinal = yVentanaTexto - yPapel + 90; //Lo cuadramos con la previsualizacion
+
+		
+		Texto textoINS = new Texto(xFinal, yFinal, 0, 0, cp.getGraficos().getColor(), cp.getTamanyo(), null, 0,  texto.getText().length(), texto.getText());
+		cp.getDibujos().add(textoINS);
+		textoINS.pintarString(cp);
+		cp.forRepaint();
 		cp.repaint();
-		p.repaint();
 		if(rainbowEstaba) {
 			cp.setRainbowActivado(true);
 		}
 	}
 
-	
 
-	public void clickarEstado(ComponentePapel cp){
-		try {
-			Color colorAnterior = cp.getGraficos().getColor();
-			cp.getGraficos().setPaint(new Color(255,255,255,0));
-			robot = new Robot();
-			robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
-			robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
-			Thread.sleep(20);
-	        robot.mouseRelease(InputEvent.BUTTON1_MASK);
-	    	cp.getGraficos().setPaint(colorAnterior);
-		} catch (AWTException e1) {
-			e1.printStackTrace();
-		} catch (InterruptedException e2) {
-			e2.printStackTrace();
-		}
-	}
 
-	
-	
-	
 
 	public JTextField getTexto() {
 		return texto;
@@ -160,7 +171,7 @@ public class VentanaTexto extends JFrame {
 	public void setTexto(JTextField texto) {
 		this.texto = texto;
 	}
-
+	
 	public JPanel getPanelPrevisualizacion() {
 		return panelPrevisualizacion;
 	}
@@ -168,7 +179,7 @@ public class VentanaTexto extends JFrame {
 	public void setPanelPrevisualizacion(JPanel panelPrevisualizacion) {
 		this.panelPrevisualizacion = panelPrevisualizacion;
 	}
-
+	
 	public JLabel getLabelTexto() {
 		return labelTexto;
 	}
