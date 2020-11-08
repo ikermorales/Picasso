@@ -1,15 +1,15 @@
-import java.awt.Color;
-import java.awt.Dimension;
+import java.awt.Color; 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.Polygon;
+import java.awt.Point;
 import java.awt.RenderingHints;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,12 +17,21 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.ConcurrentModificationException;
+import java.util.HashMap;
+import java.util.Iterator;
 
 import javax.imageio.ImageIO;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
+import javax.swing.KeyStroke;
+import javax.swing.text.JTextComponent.KeyBinding;
 
 public class ComponentePapel extends JComponent {
 
@@ -39,20 +48,14 @@ public class ComponentePapel extends JComponent {
 	private int yVieja;
 
 	private static int pincel;
+	private Color colorActual;
 
 	private static int tamanyo = 8;
 
-	private int[] xcuadrado = new int[4];
-	private int[] ycuadrado = new int [4];
-	private Polygon cuadrado;
+	private static int contadorImagen = 0;
 
-	private static int contadorImagen = 1;
 	private boolean deshaciendo = false;
 	private static ArrayList<Integer> contadorImagenMaximo = new ArrayList<>();
-
-	private int[] xTriangulo = new int[3];
-	private int[] yTriangulo = new int [3];
-	private Polygon triangulo;
 
 	private File carpetaProcesoAnterior = new File("proceso/");
 	private File[] procesosAnteriores = carpetaProcesoAnterior.listFiles();
@@ -61,163 +64,221 @@ public class ComponentePapel extends JComponent {
 	private boolean rainbowActivado;
 	private ArrayList<Color> colores;
 
-	private int[] corazonTriangulo1 = new int[3];
-	private int[] corazonTriangulo2 = new int [3];
-	private Polygon corazon;
+	private ArrayList<String> pinceles;
+	private ArrayList<Sprite> dibujos;
+	private ArrayList<ArrayList<Sprite>> dibujosGrandes;
+	private Sprite pixelado;
+	private int selectorSprite = 0;
+
+	private Image img;
+	private Thread hiloImagen;
+
+	private int xConstante;
+	private int yConstante;
+
+	private VentanaEdicion ventanaEdicion;
+	private VentanaEdicionTexto ventanaEdicionTexto;
+	
+	private static HashMap<Integer, ArrayList<ArrayList<Sprite>>> hashDibujos;
 
 	public ComponentePapel(Papel p) {
+
 		setDoubleBuffered(false);
 		setFocusable(true);
 		requestFocus();
+
+		pinceles = new ArrayList<>();
+		pinceles.add("punto.png");
+		dibujos = new ArrayList<>();
+		dibujosGrandes = new ArrayList<>();
+		hashDibujos = new HashMap<>();
+
 		addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
 				xVieja = e.getX();
 				yVieja = e.getY();
+
 			}
 
-			public void mouseReleased(MouseEvent e) {
+			public void mouseReleased(MouseEvent e) {		
 				generarEstado(p);
 			}
+
+			public void mouseClicked(MouseEvent e) {
+				if(e.getButton() == 3) {
+					
+					for(Iterator<ArrayList<Sprite>> spritesIterador = dibujosGrandes.iterator(); spritesIterador.hasNext();) {
+						ArrayList<Sprite> spritesTodos = spritesIterador.next();
+
+						for (Iterator<Sprite> spriteIterador = spritesTodos.iterator(); spriteIterador.hasNext();) {
+							Sprite sprite = spriteIterador.next();
+
+							double dx = sprite.getX() - xConstante;
+							double dy = sprite.getY() - yConstante;
+							double distance = Math.sqrt(dx * dx + dy * dy);
+
+							if(distance < sprite.getCollisionRad() && sprite.getClass().getName().contains("Texto")) {
+								ventanaEdicionTexto = new VentanaEdicionTexto(ComponentePapel.this, spritesTodos, p);
+								forRepaint();
+								break;
+							} else if(distance < sprite.getCollisionRad() && sprite.getClass().getName().contains("Sprite")) {
+								ventanaEdicion = new VentanaEdicion(ComponentePapel.this, spritesTodos, p);
+								forRepaint();
+								break;
+							}
+
+						}
+					}
+				}
+			}
+
 
 		});
 
 
-		addMouseMotionListener(new MouseMotionAdapter() {
+		addMouseMotionListener(new MouseMotionListener() {
+
+
+			public void mouseMoved(MouseEvent e) {
+				xConstante = e.getX();
+				yConstante = e.getY();
+			}
+
 			public void mouseDragged(MouseEvent e) {
+				
+				procesosAnteriores = carpetaProcesoAnterior.listFiles();
+				
+				for (File file : procesosAnteriores) {
+					if(contadorImagen < Integer.parseInt(file.getName().substring(0,1))) {
+						file.delete();			
+					}
+				}
+
+				try {
+					for (Integer i : hashDibujos.keySet()) {
+						if(i > contadorImagen) {
+							hashDibujos.remove(i);
+							System.out.println(contadorImagen + " ; " + hashDibujos.keySet());
+						}
+					}
+				} catch (Exception e2) {
+					//No hacer nada, por que lo hace bien aun así
+				}
+
 				xActual = e.getX();
 				yActual = e.getY();
-
-				File imagenEterea = new File("proceso/" + (contadorImagen) + ".jpg");
-				if (imagenEterea.exists() && !deshaciendo) {
-					Collections.sort(contadorImagenMaximo);
-					Collections.reverse(contadorImagenMaximo);
-					for (int i = contadorImagen; i <= contadorImagenMaximo.get(0) ; i++) {
-						File imagenDesviada = new File("proceso/" + i + ".jpg");
-						imagenDesviada.delete();
-					}
-				}
-
+				
 				deshaciendo = false;
 
-				if (graficos != null) {
-
-					if (pincel == 0) {	//Pincel Bolígrafo
-						graficos.drawLine(xVieja, yVieja, xActual, yActual); 
-						repaint();
-						xVieja = xActual;
-						yVieja = yActual; 
-					}
-					else if(pincel == 1) { //Pincel Pixelado
-						xcuadrado[0] = xActual;
-						ycuadrado[0] = yActual;
-
-
-						xcuadrado[1] = xActual + tamanyo;
-						ycuadrado[1] = yActual;
-
-
-						xcuadrado[2] = xActual + tamanyo;
-						ycuadrado[2] = yActual + tamanyo;
-
-						xcuadrado[3] = xActual;
-						ycuadrado[3] = yActual + tamanyo;
-
-						cuadrado = new Polygon(xcuadrado, ycuadrado, 4);
-
-						graficos.fill(cuadrado);
-						graficos.draw(cuadrado);
-
-						repaint();
-						xVieja = xActual;
-						yVieja = yActual; 
-
-					} 
-					else if(pincel== 2) {
-						graficos.fillOval(xActual, yActual, tamanyo, tamanyo);
-						repaint();
-						xVieja = xActual;
-						yVieja = yActual;
-					}else if(pincel == 3) {
-						xTriangulo[0] = xActual;
-						yTriangulo[0] = yActual;
-
-						xTriangulo[1] = xActual + tamanyo/2;
-						yTriangulo[1] = yActual + tamanyo;
-
-						xTriangulo[2] = xActual - tamanyo/2;
-						yTriangulo[2] = yActual + tamanyo;
-
-						triangulo = new Polygon(xTriangulo, yTriangulo, 3);
-						graficos.fill(triangulo);
-						graficos.draw(triangulo);
-						repaint();
-						xVieja = xActual;
-						yVieja = yActual; 
-
-
-					} else if(pincel == 4){ //Pincel Corazón
-						corazonTriangulo1[0] = xActual - 2*tamanyo/34;
-						corazonTriangulo1[1] = xActual + tamanyo + 2*tamanyo/34;
-						corazonTriangulo1[2] = (xActual - 2*tamanyo/34 + xActual + tamanyo + 2*tamanyo/34)/2;
-
-						corazonTriangulo2[0] = yActual + tamanyo - 2*tamanyo/3;
-						corazonTriangulo2[1] = yActual + tamanyo - 2*tamanyo/3;
-						corazonTriangulo2[2] = yActual + tamanyo;
-
-						graficos.fillOval(xActual - tamanyo/12, yActual, tamanyo/2 + tamanyo/6, tamanyo/2); 
-						graficos.fillOval(xActual + tamanyo/2 - tamanyo/12,	yActual, tamanyo/2 + tamanyo/6, tamanyo/2);
-
-						corazon = new Polygon(corazonTriangulo1, corazonTriangulo2, corazonTriangulo1.length);
-						graficos.fill(corazon);
-						graficos.draw(corazon);
-						repaint();
-						xVieja = xActual;
-						yVieja = yActual; 
-
-
-					} else {
-						System.out.println("no hay mas pinceles");
+				pixelado = new Sprite(xActual, yActual, xVieja, yVieja, graficos.getColor(), tamanyo, pinceles, selectorSprite, tamanyo);
+				dibujos.add(pixelado);
+				
+				
+				for(Iterator<ArrayList<Sprite>> spritesIterador = dibujosGrandes.iterator(); spritesIterador.hasNext();) {
+					ArrayList<Sprite> spritesTodos = spritesIterador.next();
+					
+					if(spritesTodos.isEmpty() || spritesTodos == null) {
+						spritesIterador.remove();
 					}
 				}
+
+				xVieja = xActual;
+				yVieja = yActual;
+
+				forRepaint();
+				deshaciendo = false;
+
 			}
 		});
 
 		addKeyListener(new KeyAdapter() {
-			public void keyPressed(KeyEvent e) {
-				if ((e.getKeyCode() == KeyEvent.VK_Z) && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0)) {
-					cargarImagenAnterior(p);
 
-				}	else if ((e.getKeyCode() == KeyEvent.VK_Y) && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0)) {
-					cargarImagenSiguiente(p);
-				}		
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_DELETE) {
+					for(Iterator<ArrayList<Sprite>> spritesIterador = dibujosGrandes.iterator(); spritesIterador.hasNext();) {
+						ArrayList<Sprite> spritesTodos = spritesIterador.next();
+
+						for (Iterator<Sprite> spriteIterador = spritesTodos.iterator(); spriteIterador.hasNext();) {
+							Sprite sprite = spriteIterador.next();
+
+							double dx = sprite.getX() - xConstante;
+							double dy = sprite.getY() - yConstante;
+							double distance = Math.sqrt(dx * dx + dy * dy);
+
+							if(distance < sprite.getCollisionRad()) {
+								try{
+									spritesIterador.remove();
+									forRepaint();
+									break;
+								} catch(IllegalStateException e2) {
+									//NO HACER NADA
+								}
+
+							}	
+						}
+					}
+					deshaciendo = false;
+				}  else if ((e.getKeyCode() == KeyEvent.VK_Z) && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0) && contadorImagen > 1) {
+					deshaciendo = true;  
+					dibujosGrandes = new ArrayList<>();
+					dibujos = new ArrayList<>();              
+					forRepaint();             
+					contadorImagen = contadorImagen - 2;
+					setDibujosGrandes(getHashDibujos().get(contadorImagen));
+					hashDibujos.replace(contadorImagen, dibujosGrandes);
+					forRepaint();
+					generarEstado(p);
+					
+					deshaciendo = true;
+				} else if ((e.getKeyCode() == KeyEvent.VK_Y) && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0)
+						&& deshaciendo && hashDibujos.containsKey(contadorImagen)) {
+					dibujosGrandes = new ArrayList<>();
+					dibujos = new ArrayList<>();                        
+					forRepaint();                          
+					try {
+						setDibujosGrandes(getHashDibujos().get(contadorImagen));
+					} catch (Exception e2) {
+						e2.printStackTrace();
+					}
+					forRepaint();
+					generarEstado(p);
+					
+				}  
+			} 
+
+
+			public void keyReleased (KeyEvent e){
+				if (e.getKeyCode() == KeyEvent.VK_DELETE || e.getKeyCode() == KeyEvent.VK_BACK_SPACE){
+					generarEstado(p);
+				}
 			}
+
 		});
 
 		//INIT
 		for (File file : procesosAnteriores) {
-			if (!file.getName().equals("0.jpg")) {
 				file.delete();
-			}
+			
 		}
 
-		
+
 	}
 
 
-	
-	
-	
+
+
 	protected void paintComponent(Graphics g) {
 		if (imagen == null) {
 			imagen = createImage(getSize().width, getSize().height);
 			graficos = (Graphics2D) imagen.getGraphics();
 			graficos.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			clear();
+
 		}
 		g.drawImage(imagen, 0, 0, null);
 	}
 
-	
+
 
 	public void clear() {
 		Color color = (Color) graficos.getPaint();
@@ -227,14 +288,48 @@ public class ComponentePapel extends JComponent {
 		repaint();
 	}
 
-	
-	
+
+	public void forRepaint() {
+		Color colorActual = graficos.getColor();
+		clear();
+		for (ArrayList<Sprite> spritesArray : dibujosGrandes) {
+			for (Sprite sprite : spritesArray) {
+				//sprite.pintar(ComponentePapel.this, img);
+				graficos.setColor(sprite.getColor());
+				if (sprite.getClass().getName().contains("Texto"))  {
+					Texto text = (Texto) sprite;
+					text.pintarString(this);
+					repaint();
+				} else if(sprite.getClass().getName().contains("Sprite")) {
+					sprite.pintar(this, img);
+					repaint();
+				}
+			}
+		}
+		graficos.setColor(colorActual);
+
+	}
+
+
+
 	public void generarEstado(Papel p) {
 		BufferedImage imagen = new BufferedImage((p.getAnchura() - 16), (p.getAltura() - 39), BufferedImage.TYPE_INT_RGB);
 		this.paint(imagen.createGraphics());
 
 		try {
 			File file = new File("proceso/" + contadorImagen + ".jpg");
+	
+			ArrayList<ArrayList<Sprite>> copiaDibujos = new ArrayList<>();
+			copiaDibujos = (ArrayList<ArrayList<Sprite>>) dibujosGrandes.clone();
+			dibujos = new ArrayList<>();
+			dibujosGrandes.add(dibujos);
+			
+			if(hashDibujos.containsKey(contadorImagen)) {
+				hashDibujos.replace(contadorImagen, copiaDibujos);
+			} else {
+				hashDibujos.put(contadorImagen, copiaDibujos);
+			}
+			
 			OutputStream out = new FileOutputStream(file);
 			ImageIO.write(imagen, "png", file);	
 			contadorImagen++;
@@ -248,8 +343,45 @@ public class ComponentePapel extends JComponent {
 		}
 	}
 
-	
 
+
+
+
+
+	/*
+		if ((e.getKeyCode() == KeyEvent.VK_Z) && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0)) {
+					cargarImagenAnterior(p);
+		} else if ((e.getKeyCode() == KeyEvent.VK_Y) && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0)) {
+					//cargarImagenSiguiente(p);
+		} 
+	
+	
+	public void cargarImagenAnterior(Papel p) {
+		for (Iterator<ArrayList<Sprite>> spritesArrayIterador = dibujosGrandes.iterator(); spritesArrayIterador.hasNext();) {
+
+			try {
+				ArrayList<Sprite> sprites = spritesArrayIterador.next();
+				if(!spritesArrayIterador.hasNext()) {
+					spritesArrayIterador.remove();
+					generarEstado(p);
+					contadorImagen-=2;
+				} 
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			forRepaint();
+		}
+		deshaciendo = true;
+		contadorImagen++;
+	}
+
+	
+	
+	
+	
+	
 	public void cargarImagenAnterior(Papel p) {
 		if(contadorImagen >= 2) {
 			BufferedImage imagen = new BufferedImage((p.getAnchura() - 16), (p.getAltura() - 39), BufferedImage.TYPE_INT_RGB);
@@ -257,10 +389,11 @@ public class ComponentePapel extends JComponent {
 			File imagenAnterior = new File("proceso/" + contadorImagen + ".jpg");
 			try {
 				imagen = ImageIO.read(imagenAnterior);
-				graficos.drawImage(imagen, 0, 0, (p.getAnchura() - 16), (p.getAltura() - 39), Color.BLACK, null);
+				graficos.drawImage(imagen, 0, 0, getWidth(), getHeight(), Color.BLACK, null);
 				this.paint(imagen.createGraphics());
 				deshaciendo = true;
 				contadorImagen++;
+
 				if (!contadorImagenMaximo.contains(contadorImagen)) {
 					contadorImagenMaximo.add(contadorImagen);
 				}
@@ -273,17 +406,16 @@ public class ComponentePapel extends JComponent {
 		}
 	}
 
-	
-	
+
 	public void cargarImagenSiguiente(Papel p) {
 		BufferedImage imagen = new BufferedImage((p.getAnchura() - 16), (p.getAltura() - 39), BufferedImage.TYPE_INT_RGB);
 		File imagenEterea = new File("proceso/" + (contadorImagen) + ".jpg");
 		if (imagenEterea.exists() && deshaciendo) {
 			try {
 				imagen = ImageIO.read(imagenEterea);
-				graficos.drawImage(imagen, 0, 0, (p.getAnchura() - 16), (p.getAltura() - 39), Color.BLACK, null);
+				graficos.drawImage(imagen, 0, 0, getWidth(), getHeight(), Color.BLACK, null);
 				this.paint(imagen.createGraphics());
-				contadorImagen = contadorImagen + 1;
+				contadorImagen++;
 				repaint();
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -291,8 +423,7 @@ public class ComponentePapel extends JComponent {
 		} 
 	}
 
-	
-	
+
 	public void cargarImagenConcreta(Integer i, Papel p) {
 		BufferedImage imagen = new BufferedImage((p.getAnchura() - 16), (p.getAltura() - 39), BufferedImage.TYPE_INT_RGB);
 		File imagenEterea = new File("proceso/" + (i) + ".jpg");
@@ -309,9 +440,9 @@ public class ComponentePapel extends JComponent {
 			}
 		} 
 	}
+	 */
 
-	
-	
+
 	public void dibujarRainbow() {	
 		ArrayList<Color> colores = new ArrayList<>();
 
@@ -325,6 +456,7 @@ public class ComponentePapel extends JComponent {
 			colores.add(Color.magenta);
 		}
 
+
 		hiloArcoiris = new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -334,22 +466,22 @@ public class ComponentePapel extends JComponent {
 					for (int i = 0; i < colores.size(); i++) {
 						graficos.setPaint(colores.get(i));
 						try {
-							hiloArcoiris.sleep(75);
+							hiloArcoiris.sleep(50);
 						} catch (InterruptedException e) {
 							JOptionPane.showMessageDialog(null, "Hubo un problema con el Thread del Arcoiris");
 						}
 					}
 				}
-			}});
+			}});	
 	}
 
 
-	
 	public void borrarTodo(Papel p){
-		Color color = (Color) graficos.getPaint();
+		Color colorActual = graficos.getColor();
 		graficos.setColor(Color.white);
 		graficos.fillRect(0, 0, p.getAnchura(), p.getAltura());
 		p.repaint();
+
 		FileInputStream is;
 		FileOutputStream os;
 		try {
@@ -364,16 +496,17 @@ public class ComponentePapel extends JComponent {
 			is.close();
 			os.close();
 		} catch (FileNotFoundException e) {
+			e.printStackTrace();
 			JOptionPane.showMessageDialog(null, "Hubo un problema con el estado al borrar todo.");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		this.repaint();
-		graficos.setPaint(color);;
+		graficos.setColor(colorActual);
 	}
 
 
-	
+
 	public void guardarDibujo(Papel p, String usuarioEscogido, String nombreDibujo) {
 		imagenBuff = new BufferedImage(p.getWidth(), p.getHeight(), BufferedImage.TYPE_INT_RGB);
 		Graphics2D g2d = imagenBuff.createGraphics();
@@ -392,86 +525,190 @@ public class ComponentePapel extends JComponent {
 		}
 	}
 
-	
-	
 
-	public Image getImagen() {
+
+
+
+	public static Image getImagen() {
 		return imagen;
 	}
-	public Graphics2D getGraficos() {
+
+
+
+
+	public static void setImagen(Image imagen) {
+		ComponentePapel.imagen = imagen;
+	}
+
+
+
+
+	public static Graphics2D getGraficos() {
 		return graficos;
 	}
+
+
+
+
+	public static void setGraficos(Graphics2D graficos) {
+		ComponentePapel.graficos = graficos;
+	}
+
+
+
+
+	public static BufferedImage getImagenBuff() {
+		return imagenBuff;
+	}
+
+
+
+
+	public static void setImagenBuff(BufferedImage imagenBuff) {
+		ComponentePapel.imagenBuff = imagenBuff;
+	}
+
+
+
+
+	public Thread getHiloBuff() {
+		return hiloBuff;
+	}
+
+
+
+
+	public void setHiloBuff(Thread hiloBuff) {
+		this.hiloBuff = hiloBuff;
+	}
+
+
+
+
 	public int getxActual() {
 		return xActual;
 	}
-	public int getyActual() {
-		return yActual;
-	}
-	public int getxVieja() {
-		return xVieja;
-	}
-	public int getyVieja() {
-		return yVieja;
-	}
-	public void setImagen(Image imagen) {
-		this.imagen = imagen;
-	}
-	public void setGraficos(Graphics2D graficos) {
-		this.graficos = graficos;
-	}
+
+
+
+
 	public void setxActual(int xActual) {
 		this.xActual = xActual;
 	}
+
+
+
+
+	public int getyActual() {
+		return yActual;
+	}
+
+
+
+
 	public void setyActual(int yActual) {
 		this.yActual = yActual;
 	}
+
+
+
+
+	public int getxVieja() {
+		return xVieja;
+	}
+
+
+
+
 	public void setxVieja(int xVieja) {
 		this.xVieja = xVieja;
 	}
+
+
+
+
+	public int getyVieja() {
+		return yVieja;
+	}
+
+
+
+
 	public void setyVieja(int yVieja) {
 		this.yVieja = yVieja;
 	}
 
 
-	public int getPincel() {
+
+
+	public static int getPincel() {
 		return pincel;
 	}
-	public void setPincel(int pincel) {
-		this.pincel = pincel;
-	}
-	public int getTamanyo() {
-		return tamanyo;
-	}
-	public int[] getXcuadrado() {
-		return xcuadrado;
-	}
-	public int[] getYcuadrado() {
-		return ycuadrado;
-	}
-	public Polygon getCuadrado() {
-		return cuadrado;
+
+
+
+
+	public static void setPincel(int pincel) {
+		ComponentePapel.pincel = pincel;
 	}
 
-	public int getContadorImagen() {
+
+
+
+	public Color getColorActual() {
+		return colorActual;
+	}
+
+
+
+
+	public void setColorActual(Color colorActual) {
+		this.colorActual = colorActual;
+	}
+
+
+
+
+	public static int getTamanyo() {
+		return tamanyo;
+	}
+
+
+
+
+	public static void setTamanyo(int tamanyo) {
+		ComponentePapel.tamanyo = tamanyo;
+	}
+
+
+
+
+	public static int getContadorImagen() {
 		return contadorImagen;
 	}
 
-	public void setTamanyo(int tamanyo) {
-		this.tamanyo = tamanyo;
-	}
-	public void setXcuadrado(int[] xcuadrado) {
-		this.xcuadrado = xcuadrado;
-	}
-	public void setYcuadrado(int[] ycuadrado) {
-		this.ycuadrado = ycuadrado;
-	}
-	public void setCuadrado(Polygon cuadrado) {
-		this.cuadrado = cuadrado;
-	}
+
+
 
 	public static void setContadorImagen(int contadorImagen) {
 		ComponentePapel.contadorImagen = contadorImagen;
 	}
+
+
+
+
+	public boolean isDeshaciendo() {
+		return deshaciendo;
+	}
+
+
+
+
+	public void setDeshaciendo(boolean deshaciendo) {
+		this.deshaciendo = deshaciendo;
+	}
+
+
 
 
 	public static ArrayList<Integer> getContadorImagenMaximo() {
@@ -479,9 +716,41 @@ public class ComponentePapel extends JComponent {
 	}
 
 
+
+
 	public static void setContadorImagenMaximo(ArrayList<Integer> contadorImagenMaximo) {
 		ComponentePapel.contadorImagenMaximo = contadorImagenMaximo;
 	}
+
+
+
+
+	public File getCarpetaProcesoAnterior() {
+		return carpetaProcesoAnterior;
+	}
+
+
+
+
+	public void setCarpetaProcesoAnterior(File carpetaProcesoAnterior) {
+		this.carpetaProcesoAnterior = carpetaProcesoAnterior;
+	}
+
+
+
+
+	public File[] getProcesosAnteriores() {
+		return procesosAnteriores;
+	}
+
+
+
+
+	public void setProcesosAnteriores(File[] procesosAnteriores) {
+		this.procesosAnteriores = procesosAnteriores;
+	}
+
+
 
 
 	public Thread getHiloArcoiris() {
@@ -489,9 +758,13 @@ public class ComponentePapel extends JComponent {
 	}
 
 
+
+
 	public void setHiloArcoiris(Thread hiloArcoiris) {
 		this.hiloArcoiris = hiloArcoiris;
 	}
+
+
 
 
 	public boolean isRainbowActivado() {
@@ -499,8 +772,181 @@ public class ComponentePapel extends JComponent {
 	}
 
 
+
+
 	public void setRainbowActivado(boolean rainbowActivado) {
 		this.rainbowActivado = rainbowActivado;
 	}
+
+
+
+
+	public ArrayList<Color> getColores() {
+		return colores;
+	}
+
+
+
+
+	public void setColores(ArrayList<Color> colores) {
+		this.colores = colores;
+	}
+	
+	
+
+	public ArrayList<String> getPinceles() {
+		return pinceles;
+	}
+
+
+
+
+	public void setPinceles(ArrayList<String> pinceles) {
+		this.pinceles = pinceles;
+	}
+
+
+
+	public ArrayList<Sprite> getDibujos() {
+		return dibujos;
+	}
+
+
+
+
+	public void setDibujos(ArrayList<Sprite> dibujos) {
+		this.dibujos = dibujos;
+	}
+
+
+
+	public ArrayList<ArrayList<Sprite>> getDibujosGrandes() {
+		return dibujosGrandes;
+	}
+
+
+
+
+	public void setDibujosGrandes(ArrayList<ArrayList<Sprite>> dibujosGrandes) {
+		this.dibujosGrandes = dibujosGrandes;
+	}
+
+
+
+
+	public Sprite getPixelado() {
+		return pixelado;
+	}
+
+
+
+
+	public void setPixelado(Sprite pixelado) {
+		this.pixelado = pixelado;
+	}
+
+
+
+
+	public int getSelectorSprite() {
+		return selectorSprite;
+	}
+
+
+
+
+	public void setSelectorSprite(int selectorSprite) {
+		this.selectorSprite = selectorSprite;
+	}
+
+
+
+
+	public Image getImg() {
+		return img;
+	}
+
+
+
+
+	public void setImg(Image img) {
+		this.img = img;
+	}
+
+
+
+
+	public Thread getHiloImagen() {
+		return hiloImagen;
+	}
+
+
+
+
+	public void setHiloImagen(Thread hiloImagen) {
+		this.hiloImagen = hiloImagen;
+	}
+
+
+
+
+	public int getxConstante() {
+		return xConstante;
+	}
+
+
+
+
+	public void setxConstante(int xConstante) {
+		this.xConstante = xConstante;
+	}
+
+
+
+
+	public int getyConstante() {
+		return yConstante;
+	}
+
+
+
+
+	public void setyConstante(int yConstante) {
+		this.yConstante = yConstante;
+	}
+
+
+
+
+	public VentanaEdicion getVentanaEdicion() {
+		return ventanaEdicion;
+	}
+
+
+
+
+	public void setVentanaEdicion(VentanaEdicion ventanaEdicion) {
+		this.ventanaEdicion = ventanaEdicion;
+	}
+
+
+
+
+	public static HashMap<Integer, ArrayList<ArrayList<Sprite>>> getHashDibujos() {
+		return hashDibujos;
+	}
+
+
+
+
+	public static void setHashDibujos(HashMap<Integer, ArrayList<ArrayList<Sprite>>> hashDibujos) {
+		ComponentePapel.hashDibujos = hashDibujos;
+	}
+	
+	
+
+
+
+
 
 }
