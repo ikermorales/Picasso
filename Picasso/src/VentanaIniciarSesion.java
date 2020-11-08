@@ -1,5 +1,5 @@
-import java.awt.*;  
-import java.awt.event.*;
+import java.awt.*;   
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -15,12 +15,12 @@ import java.util.Scanner;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
+import javax.security.auth.callback.TextOutputCallback;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-
+import javax.swing.event.*;
+ 
 public class VentanaIniciarSesion extends JFrame {
 
 	private JPanel panelUsuario;
@@ -40,26 +40,26 @@ public class VentanaIniciarSesion extends JFrame {
 	private JPanel panelDecorativo;
 	private JLabel labelDecorativo;
 
-	private File file = new File("usuariosdata.txt");
-
-	private static ComponentePapel componente;
-	private static VentanaMenu menu;
 	private static Papel papel;
 	private static String usuarioEscogido;
+	private static VentanaMenu menu;
+
 
 	public VentanaIniciarSesion() {
 		setTitle("Inicio");
 		setSize(310,260);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setLayout(new FlowLayout());
+		setLayout(new GridLayout(2,1));
+		setResizable(false);
 		setLocationRelativeTo(null);
-		setBackground(new Color(188, 245, 175));
+		setBackground(Color.WHITE);
 
 
 		panelDecorativo = new JPanel();
 		panelDecorativo.setLayout(new GridLayout(1,1));
 		panelDecorativo.setBorder(BorderFactory.createEmptyBorder(10, 0, 20, 0)); //TOC
 		labelDecorativo = new JLabel(new ImageIcon("iconos/login.png"));
+		panelDecorativo.setBackground(Color.WHITE);
 		panelDecorativo.add(labelDecorativo);
 		add(panelDecorativo);
 
@@ -68,7 +68,7 @@ public class VentanaIniciarSesion extends JFrame {
 		panelDatos.setLayout(new GridLayout(3,1));
 		panelDatos.setBorder(new LineBorder(Color.LIGHT_GRAY));
 		panelDatos.setSize(new Dimension(100,100));
-		panelDatos.setBackground(new Color(188, 245, 175));
+		panelDatos.setBackground(new Color(111, 195, 179));
 		panelDatos.setPreferredSize(new Dimension(280,100));
 		add(panelDatos);
 
@@ -77,7 +77,7 @@ public class VentanaIniciarSesion extends JFrame {
 		usuario.setPreferredSize(new Dimension(100,25));
 		panelUsuario.add(labelUsuario);
 		panelUsuario.add(usuario);
-		panelUsuario.setBackground(new Color(188, 245, 175));
+		panelUsuario.setBackground(new Color(111, 195, 179));
 		panelDatos.add(panelUsuario);
 
 		panelContraseña = new JPanel();
@@ -85,7 +85,7 @@ public class VentanaIniciarSesion extends JFrame {
 		contraseña.setPreferredSize(new Dimension(100,25));
 		panelContraseña.add(labelContraseña);
 		panelContraseña.add(contraseña);
-		panelContraseña.setBackground(new Color(188, 245, 175));
+		panelContraseña.setBackground(new Color(111, 195, 179));
 		panelDatos.add(panelContraseña);
 
 		panelBotonera = new JPanel();
@@ -95,9 +95,8 @@ public class VentanaIniciarSesion extends JFrame {
 		crearUsuario.setEnabled(false);
 		panelBotonera.add(aceptar);
 		panelBotonera.add(crearUsuario);
-		panelBotonera.setBackground(new Color(188, 245, 175));
+		panelBotonera.setBackground(new Color(111, 195, 179));
 		panelDatos.add(panelBotonera);
-
 
 		aceptar.addActionListener(new ActionListener() {
 
@@ -115,8 +114,7 @@ public class VentanaIniciarSesion extends JFrame {
 						@Override
 						public void actionPerformed(ActionEvent e) {
 							papel = new Papel();
-							componente = new ComponentePapel(papel);
-							menu = new VentanaMenu(componente, papel, usuarioEscogido);
+							menu = new VentanaMenu(papel.getCompPapel(), papel, usuarioEscogido);
 							dispose();
 
 						}
@@ -130,17 +128,18 @@ public class VentanaIniciarSesion extends JFrame {
 			}
 		});
 
-
 		crearUsuario.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+
 				crearUsuario();
+
+
 			}
 		});
 
-
-
+		
 		usuario.getDocument().addDocumentListener(new DocumentListener() {
 			public void changedUpdate(DocumentEvent e) {
 				changed();
@@ -152,7 +151,7 @@ public class VentanaIniciarSesion extends JFrame {
 				changed();
 			}
 		});
-
+		
 		contraseña.getDocument().addDocumentListener(new DocumentListener() {
 			public void changedUpdate(DocumentEvent e) {
 				changed();
@@ -164,21 +163,14 @@ public class VentanaIniciarSesion extends JFrame {
 				changed();
 			}
 		});		
+		
 
 		setVisible(true);		
 	}
-
-
-
-
-
+	
 
 	public void changed() {
-		if (usuario.getText().equals("") || contraseña.getText().equals("")
-			|| usuario.getText().contains(" ") || contraseña.getText().contains(" ")
-			|| usuario.getText().contains(";") || contraseña.getText().contains(";")
-			|| usuario.getText().contains("(") || contraseña.getText().contains("(")
-			|| usuario.getText().contains(")") || contraseña.getText().contains(")")) {
+		if (contraseña.getText().equals("") || contraseña.getText().contains(" ") || usuario.getText().equals("") || usuario.getText().contains(" ")){
 			aceptar.setEnabled(false);
 			crearUsuario.setEnabled(false);
 		}
@@ -187,8 +179,6 @@ public class VentanaIniciarSesion extends JFrame {
 			crearUsuario.setEnabled(true);
 		}
 	}
-
-
 
 	public boolean comprobar() {
 		try {
@@ -219,7 +209,6 @@ public class VentanaIniciarSesion extends JFrame {
 	}
 
 
-
 	public void crearUsuario() {
 
 		try {
@@ -237,7 +226,6 @@ public class VentanaIniciarSesion extends JFrame {
 				String contraseñaBD = rs1.getString("contraseña");
 				usuariosBD.add(usuarioBD);
 			}
-			rs1.close();
 
 			if (!usuariosBD.contains(usuario.getText())) {
 				String instruccion = "INSERT INTO usuarios (usuario, contraseña) VALUES ('" + usuario.getText()  + "','" + contraseña.getText() + "');";
@@ -245,13 +233,9 @@ public class VentanaIniciarSesion extends JFrame {
 				directorioPersonal.mkdirs();
 				JOptionPane.showMessageDialog(null, "Usuario creado con éxito");
 				int rs2 = stmt.executeUpdate(instruccion);
-				
 			} else {
 				JOptionPane.showMessageDialog(null, "Este usuario ya existe");
 			}
-			
-			stmt.close();
-			conn.close();
 
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
@@ -260,6 +244,19 @@ public class VentanaIniciarSesion extends JFrame {
 		}	
 
 	} 
+
+	//
+
+
+
+
+	public static String getUsuarioEscogido() {
+		return usuarioEscogido;
+	}
+	public static void setUsuarioEscogido(String usuarioEscogido) {
+		VentanaIniciarSesion.usuarioEscogido = usuarioEscogido;
+	}
+
 
 
 
