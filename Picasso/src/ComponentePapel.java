@@ -31,6 +31,7 @@ import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.text.JTextComponent.KeyBinding;
 
 public class ComponentePapel extends JComponent {
@@ -146,48 +147,50 @@ public class ComponentePapel extends JComponent {
 			}
 
 			public void mouseDragged(MouseEvent e) {
-				
-				procesosAnteriores = carpetaProcesoAnterior.listFiles();
-				
-				for (File file : procesosAnteriores) {
-					if(contadorImagen < Integer.parseInt(file.getName().substring(0,1))) {
-						file.delete();			
-					}
-				}
 
-				try {
-					for (Integer i : hashDibujos.keySet()) {
-						if(i > contadorImagen) {
-							hashDibujos.remove(i);
-							System.out.println(contadorImagen + " ; " + hashDibujos.keySet());
+				if(SwingUtilities.isLeftMouseButton(e)) {
+					procesosAnteriores = carpetaProcesoAnterior.listFiles();
+					
+					for (File file : procesosAnteriores) {
+						if(contadorImagen < Integer.parseInt(file.getName().substring(0,1))) {
+							file.delete();			
 						}
 					}
-				} catch (Exception e2) {
-					//No hacer nada, por que lo hace bien aun así
-				}
 
-				xActual = e.getX();
-				yActual = e.getY();
-				
-				deshaciendo = false;
-
-				pixelado = new Sprite(xActual, yActual, xVieja, yVieja, graficos.getColor(), tamanyo, pinceles, selectorSprite, tamanyo);
-				dibujos.add(pixelado);
-				
-				
-				for(Iterator<ArrayList<Sprite>> spritesIterador = dibujosGrandes.iterator(); spritesIterador.hasNext();) {
-					ArrayList<Sprite> spritesTodos = spritesIterador.next();
-					
-					if(spritesTodos.isEmpty() || spritesTodos == null) {
-						spritesIterador.remove();
+					try {
+						for (Integer i : hashDibujos.keySet()) {
+							if(i > contadorImagen) {
+								hashDibujos.remove(i);
+								System.out.println(contadorImagen + " ; " + hashDibujos.keySet());
+							}
+						}
+					} catch (Exception e2) {
+						//No hacer nada, por que lo hace bien aun así
 					}
+
+					xActual = e.getX();
+					yActual = e.getY();
+
+					deshaciendo = false;
+
+					pixelado = new Sprite(xActual, yActual, xVieja, yVieja, graficos.getColor(), tamanyo, pinceles, selectorSprite, tamanyo);
+					dibujos.add(pixelado);
+
+
+					for(Iterator<ArrayList<Sprite>> spritesIterador = dibujosGrandes.iterator(); spritesIterador.hasNext();) {
+						ArrayList<Sprite> spritesTodos = spritesIterador.next();
+
+						if(spritesTodos.isEmpty() || spritesTodos == null) {
+							spritesIterador.remove();
+						}
+					}
+
+					xVieja = xActual;
+					yVieja = yActual;
+
+					forRepaint();
+					deshaciendo = false;
 				}
-
-				xVieja = xActual;
-				yVieja = yActual;
-
-				forRepaint();
-				deshaciendo = false;
 
 			}
 		});
