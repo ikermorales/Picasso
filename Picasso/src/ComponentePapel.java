@@ -149,6 +149,7 @@ public class ComponentePapel extends JComponent {
 			public void mouseDragged(MouseEvent e) {
 
 				if(SwingUtilities.isLeftMouseButton(e)) {
+					
 					procesosAnteriores = carpetaProcesoAnterior.listFiles();
 					
 					for (File file : procesosAnteriores) {
@@ -380,33 +381,17 @@ public class ComponentePapel extends JComponent {
 	}
 
 
-	public void borrarTodo(Papel p){
-		Color colorActual = graficos.getColor();
-		graficos.setColor(Color.white);
-		graficos.fillRect(0, 0, p.getAnchura(), p.getAltura());
-		p.repaint();
-
-		FileInputStream is;
-		FileOutputStream os;
-		try {
-			is = new FileInputStream(new File("proceso/0.jpg"));
-			contadorImagen++;
-			os = new FileOutputStream(new File("proceso/" + (contadorImagen-1) + ".jpg"));
-			byte[] buffer = new byte[1024];
-			int length;
-			while ((length = is.read(buffer)) > 0) {
-				os.write(buffer, 0, length);
-			} 
-			is.close();
-			os.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Hubo un problema con el estado al borrar todo.");
-		} catch (IOException e) {
-			e.printStackTrace();
+	public void borrarTodo() {
+		for(File file : carpetaProcesoAnterior.listFiles()) {
+			if(!file.getName().equals("0.jpg")) {
+				file.delete();
+			}
 		}
-		this.repaint();
-		graficos.setColor(colorActual);
+		hashDibujos = new HashMap<>();
+		dibujosGrandes = new ArrayList<>();
+		dibujos = new ArrayList<>();
+		contadorImagen = 0;
+		forRepaint();
 	}
 
 

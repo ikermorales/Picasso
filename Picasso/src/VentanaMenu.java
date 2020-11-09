@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.awt.Dimension; 
 import java.awt.Graphics;
 import java.awt.GridBagLayout;
@@ -21,6 +22,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -69,6 +71,9 @@ public class VentanaMenu extends JFrame {
 	private JMenuItem stop;
 
 	private JMenu menuGaleria;
+	
+	private JPanel transparenciaPanel;
+	private JSlider barratransparencia;
 
 
 	public VentanaMenu(ComponentePapel cp, Papel p, String usuario) {
@@ -151,8 +156,7 @@ public class VentanaMenu extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				cp.borrarTodo(p);	
-				cp.setDibujosGrandes(new ArrayList<>());
+				cp.borrarTodo();
 			}
 		});
 		add(botonBorrarTodo);
@@ -193,6 +197,7 @@ public class VentanaMenu extends JFrame {
 		panelTamanyo.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0)); //TOC
 		panelTamanyo.add(sliderTamanyo);
 		panelTamanyo.add(tamanyoPng);
+		panelTamanyo.setBorder(new LineBorder(Color.LIGHT_GRAY));
 		add(panelTamanyo);
 
 
@@ -224,6 +229,36 @@ public class VentanaMenu extends JFrame {
 		menuArchivo.add(guardarArchivo);
 		menuArchivo.add(cargarArchivo);
 		barra.add(menuArchivo);
+		
+		
+		
+		barratransparencia = new JSlider(0, 255); 
+		barratransparencia.setPreferredSize(new Dimension(140,40));
+		barratransparencia.setSize(getMinimumSize());
+		barratransparencia.setValue(255);
+		barratransparencia.setMajorTickSpacing(100);
+		barratransparencia.setMajorTickSpacing(20);
+		barratransparencia.setBorder(new TitledBorder("Opacidad: " + barratransparencia.getValue())); //Tengo que cambiar el nombre, pues la transparencia al máximo es opacidad.
+		barratransparencia.addChangeListener(new ChangeListener() {
+			
+			@Override
+			public void stateChanged(ChangeEvent arg0) {
+				barratransparencia.setBorder(new TitledBorder("Opacidad: " + barratransparencia.getValue()));
+				Color colorActual = cp.getGraficos().getColor();
+				cp.getGraficos().setColor(new Color(colorActual.getRed(), colorActual.getGreen(), colorActual.getBlue(), barratransparencia.getValue()));
+				
+			}
+		});
+
+		transparenciaPanel = new JPanel();
+		transparenciaPanel.setBorder(BorderFactory.createEmptyBorder(0,0,5,0)); //TOC
+		transparenciaPanel.add(barratransparencia);
+		transparenciaPanel.add(new JLabel(new ImageIcon("iconos/opacidad.png")));
+		transparenciaPanel.getMinimumSize();
+		transparenciaPanel.setBorder(new LineBorder(Color.LIGHT_GRAY));
+		add(transparenciaPanel);
+		
+		
 
 		setVisible(true);
 	}
