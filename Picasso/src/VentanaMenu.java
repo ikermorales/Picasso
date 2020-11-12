@@ -1,4 +1,4 @@
-import java.awt.Color;
+import java.awt.Color; 
 import java.awt.Dimension; 
 import java.awt.Graphics;
 import java.awt.GridBagLayout;
@@ -69,6 +69,7 @@ public class VentanaMenu extends JFrame {
 
 	private JMenu menuMusica;
 	private JMenuItem stop;
+	private static Musica m = new Musica();
 
 	private JMenu menuGaleria;
 	
@@ -257,6 +258,47 @@ public class VentanaMenu extends JFrame {
 		transparenciaPanel.getMinimumSize();
 		transparenciaPanel.setBorder(new LineBorder(Color.LIGHT_GRAY));
 		add(transparenciaPanel);
+		
+		
+		menuMusica = new JMenu("Fonoteca");
+		menuMusica.setIcon(new ImageIcon("iconos/disco.png"));
+		barra.add(menuMusica);
+	
+		stop = new JMenuItem("Stop", new ImageIcon("iconos/mute.png"));
+		stop.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				m.setActivado(false);
+				m.playear(".wav");
+			}
+		});
+		menuMusica.add(stop);
+		
+		ArrayList<String> canciones = new ArrayList<>();
+		canciones.add("Railroad");
+		canciones.add("Devil");
+		canciones.add("Hydra");
+		canciones.add("Floral");
+		canciones.add("Hell");
+		canciones.add("Fanatic");
+		canciones.add("Diamond");
+		canciones.add("Perdition");
+		
+		for (String cancion : canciones) {
+			JMenuItem cancionItem = new JMenuItem(cancion, new ImageIcon("iconos/" + cancion + ".png"));
+			cancionItem.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					m.setActivado(true);
+					m.playear("musica/" + cancion + ".wav");
+				}
+			});
+			menuMusica.add(cancionItem);
+		}
+		
+		
 		
 		
 
