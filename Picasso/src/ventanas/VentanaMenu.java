@@ -1,3 +1,4 @@
+package ventanas;
 import java.awt.Color; 
 import java.awt.Dimension; 
 import java.awt.Graphics;
@@ -26,6 +27,10 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import clasesBase.ComponentePapel;
+import clasesBase.Musica;
+import clasesBase.Papel;
 
 
 public class VentanaMenu extends JFrame {

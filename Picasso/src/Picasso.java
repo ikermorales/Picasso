@@ -1,3 +1,5 @@
+import ventanas.VentanaIniciarSesion;
+
 public class Picasso {
 	
 	private static VentanaIniciarSesion ventanaInicial;

@@ -1,3 +1,4 @@
+package ventanas;
 import java.awt.Color;
 import java.awt.FlowLayout;
 
@@ -5,6 +6,8 @@ import javax.swing.JColorChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.colorchooser.ColorSelectionModel;
+
+import clasesBase.ComponentePapel;
 
 
 public class Paleta extends JFrame{

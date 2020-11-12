@@ -1,3 +1,4 @@
+package ventanas;
 import java.awt.*; 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -7,6 +8,9 @@ import java.util.HashMap;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
+
+import clasesBase.ComponentePapel;
+import clasesBase.Papel;
 
 
 public class VentanaProceso extends JFrame{

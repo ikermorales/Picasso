@@ -1,3 +1,4 @@
+package ventanas;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,6 +14,9 @@ import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+
+import clasesBase.ComponentePapel;
+import clasesBase.Sprite;
 
 
 public class VentanaGuardar extends JFrame implements Serializable {

@@ -1,4 +1,6 @@
-import java.awt.Color;
+package ventanas;
+
+import java.awt.Color; 
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.MouseInfo;
@@ -12,6 +14,10 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
+
+import clasesBase.ComponentePapel;
+import clasesBase.Papel;
+import clasesBase.Sprite;
 
 public class VentanaEdicion extends JFrame{
 

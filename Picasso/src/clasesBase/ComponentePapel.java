@@ -1,3 +1,4 @@
+package clasesBase;
 import java.awt.Color; 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -33,6 +34,9 @@ import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.text.JTextComponent.KeyBinding;
+
+import ventanas.VentanaEdicion;
+import ventanas.VentanaEdicionTexto;
 
 public class ComponentePapel extends JComponent {
 
@@ -103,7 +107,9 @@ public class ComponentePapel extends JComponent {
 			}
 
 			public void mouseReleased(MouseEvent e) {		
-				generarEstado(p);
+				if(SwingUtilities.isLeftMouseButton(e)) {
+					generarEstado(p);
+				}
 			}
 
 			public void mouseClicked(MouseEvent e) {

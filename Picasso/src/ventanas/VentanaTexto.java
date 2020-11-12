@@ -1,3 +1,4 @@
+package ventanas;
 import java.awt.*; 
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -5,6 +6,10 @@ import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.text.html.HTMLDocument.HTMLReader.BlockAction;
+
+import clasesBase.ComponentePapel;
+import clasesBase.Papel;
+import clasesBase.Texto;
 
 
 public class VentanaTexto extends JFrame {

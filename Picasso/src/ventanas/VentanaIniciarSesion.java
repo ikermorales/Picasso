@@ -1,3 +1,4 @@
+package ventanas;
 import java.awt.*;   
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,6 +21,8 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.*;
+
+import clasesBase.Papel;
  
 public class VentanaIniciarSesion extends JFrame {
 
