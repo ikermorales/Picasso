@@ -35,12 +35,11 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.text.JTextComponent.KeyBinding;
 
-
+import ventanas.Papel;
 import ventanas.VentanaEdicion;
 import ventanas.VentanaEdicionTexto;
 
 public class ComponentePapel extends JComponent {
-
 
 	private static Image imagen;
 	private static Graphics2D graficos;
@@ -185,6 +184,15 @@ public class ComponentePapel extends JComponent {
 					deshaciendo = false;
 
 					pixelado = new Sprite(xActual, yActual, xVieja, yVieja, graficos.getColor(), tamanyo, pinceles, selectorSprite, tamanyo, simetriaActivada, simetriaHorizontal);
+					
+					if(simetriaActivada && simetriaHorizontal) {
+						Sprite pixeladoSimetrico = new Sprite(ComponentePapel.this.getWidth() - xActual, ComponentePapel.this.getHeight() - yActual, ComponentePapel.this.getWidth() - xVieja, ComponentePapel.this.getHeight() - yVieja, graficos.getColor(), tamanyo, pinceles, selectorSprite, tamanyo, simetriaActivada, simetriaHorizontal);
+						dibujos.add(pixeladoSimetrico);
+					} else if (simetriaActivada && !simetriaHorizontal) {
+						Sprite pixeladoSimetrico = new Sprite(ComponentePapel.this.getWidth() - xActual, yActual, ComponentePapel.this.getWidth() - xVieja, yVieja, graficos.getColor(), tamanyo, pinceles, selectorSprite, tamanyo, simetriaActivada, simetriaHorizontal);
+						dibujos.add(pixeladoSimetrico);
+					}
+					
 					dibujos.add(pixelado);
 
 
@@ -405,59 +413,13 @@ public class ComponentePapel extends JComponent {
 	}
 
 
-	public static Image getImagen() {
-		return imagen;
-	}
-
-
-
-
-	public static void setImagen(Image imagen) {
-		ComponentePapel.imagen = imagen;
-	}
-
-
-
-
+	
+	
+	
+	
 	public static Graphics2D getGraficos() {
 		return graficos;
 	}
-
-
-
-
-	public static void setGraficos(Graphics2D graficos) {
-		ComponentePapel.graficos = graficos;
-	}
-
-
-
-
-	public static BufferedImage getImagenBuff() {
-		return imagenBuff;
-	}
-
-
-
-
-	public static void setImagenBuff(BufferedImage imagenBuff) {
-		ComponentePapel.imagenBuff = imagenBuff;
-	}
-
-
-
-
-	public Thread getHiloBuff() {
-		return hiloBuff;
-	}
-
-
-
-
-	public void setHiloBuff(Thread hiloBuff) {
-		this.hiloBuff = hiloBuff;
-	}
-
 
 
 
@@ -572,74 +534,21 @@ public class ComponentePapel extends JComponent {
 
 
 
-
-	public boolean isDeshaciendo() {
-		return deshaciendo;
-	}
-
-
-
-
-	public void setDeshaciendo(boolean deshaciendo) {
-		this.deshaciendo = deshaciendo;
-	}
-
-
-
-
-	public static ArrayList<Integer> getContadorImagenMaximo() {
-		return contadorImagenMaximo;
-	}
-
-
-
-
-	public static void setContadorImagenMaximo(ArrayList<Integer> contadorImagenMaximo) {
-		ComponentePapel.contadorImagenMaximo = contadorImagenMaximo;
-	}
-
-
-
-
 	public File getCarpetaProcesoAnterior() {
 		return carpetaProcesoAnterior;
 	}
-
-
-
-
-	public void setCarpetaProcesoAnterior(File carpetaProcesoAnterior) {
-		this.carpetaProcesoAnterior = carpetaProcesoAnterior;
-	}
-
-
+	
 
 
 	public File[] getProcesosAnteriores() {
 		return procesosAnteriores;
 	}
 
-
-
-
-	public void setProcesosAnteriores(File[] procesosAnteriores) {
-		this.procesosAnteriores = procesosAnteriores;
-	}
-
-
-
+	
 
 	public Thread getHiloArcoiris() {
 		return hiloArcoiris;
 	}
-
-
-
-
-	public void setHiloArcoiris(Thread hiloArcoiris) {
-		this.hiloArcoiris = hiloArcoiris;
-	}
-
 
 
 
@@ -653,20 +562,6 @@ public class ComponentePapel extends JComponent {
 	public void setRainbowActivado(boolean rainbowActivado) {
 		this.rainbowActivado = rainbowActivado;
 	}
-
-
-
-
-	public ArrayList<Color> getColores() {
-		return colores;
-	}
-
-
-
-
-	public void setColores(ArrayList<Color> colores) {
-		this.colores = colores;
-	}
 	
 	
 
@@ -676,17 +571,9 @@ public class ComponentePapel extends JComponent {
 
 
 
-
-	public void setPinceles(ArrayList<String> pinceles) {
-		this.pinceles = pinceles;
-	}
-
-
-
 	public ArrayList<Sprite> getDibujos() {
 		return dibujos;
 	}
-
 
 
 
@@ -709,21 +596,6 @@ public class ComponentePapel extends JComponent {
 
 
 
-
-	public Sprite getPixelado() {
-		return pixelado;
-	}
-
-
-
-
-	public void setPixelado(Sprite pixelado) {
-		this.pixelado = pixelado;
-	}
-
-
-
-
 	public int getSelectorSprite() {
 		return selectorSprite;
 	}
@@ -737,77 +609,6 @@ public class ComponentePapel extends JComponent {
 
 
 
-
-	public Image getImg() {
-		return img;
-	}
-
-
-
-
-	public void setImg(Image img) {
-		this.img = img;
-	}
-
-
-
-
-	public Thread getHiloImagen() {
-		return hiloImagen;
-	}
-
-
-
-
-	public void setHiloImagen(Thread hiloImagen) {
-		this.hiloImagen = hiloImagen;
-	}
-
-
-
-
-	public int getxConstante() {
-		return xConstante;
-	}
-
-
-
-
-	public void setxConstante(int xConstante) {
-		this.xConstante = xConstante;
-	}
-
-
-
-
-	public int getyConstante() {
-		return yConstante;
-	}
-
-
-
-
-	public void setyConstante(int yConstante) {
-		this.yConstante = yConstante;
-	}
-
-
-
-
-	public VentanaEdicion getVentanaEdicion() {
-		return ventanaEdicion;
-	}
-
-
-
-
-	public void setVentanaEdicion(VentanaEdicion ventanaEdicion) {
-		this.ventanaEdicion = ventanaEdicion;
-	}
-
-
-
-
 	public static HashMap<Integer, ArrayList<ArrayList<Sprite>>> getHashDibujos() {
 		return hashDibujos;
 	}
@@ -817,20 +618,6 @@ public class ComponentePapel extends JComponent {
 
 	public static void setHashDibujos(HashMap<Integer, ArrayList<ArrayList<Sprite>>> hashDibujos) {
 		ComponentePapel.hashDibujos = hashDibujos;
-	}
-
-
-
-
-	public VentanaEdicionTexto getVentanaEdicionTexto() {
-		return ventanaEdicionTexto;
-	}
-
-
-
-
-	public void setVentanaEdicionTexto(VentanaEdicionTexto ventanaEdicionTexto) {
-		this.ventanaEdicionTexto = ventanaEdicionTexto;
 	}
 
 
