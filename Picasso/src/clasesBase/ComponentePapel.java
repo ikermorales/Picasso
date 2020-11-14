@@ -35,6 +35,7 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.text.JTextComponent.KeyBinding;
 
+
 import ventanas.VentanaEdicion;
 import ventanas.VentanaEdicionTexto;
 
@@ -85,6 +86,9 @@ public class ComponentePapel extends JComponent {
 	private VentanaEdicionTexto ventanaEdicionTexto;
 	
 	private static HashMap<Integer, ArrayList<ArrayList<Sprite>>> hashDibujos;
+	
+	private boolean simetriaActivada;
+	private boolean simetriaHorizontal;
 	
 	
 	public ComponentePapel(Papel p) {
@@ -180,7 +184,7 @@ public class ComponentePapel extends JComponent {
 
 					deshaciendo = false;
 
-					pixelado = new Sprite(xActual, yActual, xVieja, yVieja, graficos.getColor(), tamanyo, pinceles, selectorSprite, tamanyo);
+					pixelado = new Sprite(xActual, yActual, xVieja, yVieja, graficos.getColor(), tamanyo, pinceles, selectorSprite, tamanyo, simetriaActivada, simetriaHorizontal);
 					dibujos.add(pixelado);
 
 
@@ -312,7 +316,7 @@ public class ComponentePapel extends JComponent {
 					text.pintarString(this);
 					repaint();
 				} else if(sprite.getClass().getName().contains("Sprite")) {
-					sprite.pintar(this, img);
+					sprite.pintar(this);
 					repaint();
 				}
 			}
@@ -813,6 +817,48 @@ public class ComponentePapel extends JComponent {
 
 	public static void setHashDibujos(HashMap<Integer, ArrayList<ArrayList<Sprite>>> hashDibujos) {
 		ComponentePapel.hashDibujos = hashDibujos;
+	}
+
+
+
+
+	public VentanaEdicionTexto getVentanaEdicionTexto() {
+		return ventanaEdicionTexto;
+	}
+
+
+
+
+	public void setVentanaEdicionTexto(VentanaEdicionTexto ventanaEdicionTexto) {
+		this.ventanaEdicionTexto = ventanaEdicionTexto;
+	}
+
+
+
+
+	public boolean isSimetriaActivada() {
+		return simetriaActivada;
+	}
+
+
+
+
+	public void setSimetriaActivada(boolean simetriaActivada) {
+		this.simetriaActivada = simetriaActivada;
+	}
+
+
+
+
+	public boolean isSimetriaHorizontal() {
+		return simetriaHorizontal;
+	}
+
+
+
+
+	public void setSimetriaHorizontal(boolean simetriaHorizontal) {
+		this.simetriaHorizontal = simetriaHorizontal;
 	}
 	
 	

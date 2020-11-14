@@ -1,9 +1,12 @@
 package ventanas;
-import java.awt.Color; 
-import java.awt.Dimension; 
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -23,6 +26,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
@@ -80,13 +84,18 @@ public class VentanaMenu extends JFrame {
 	
 	private JPanel transparenciaPanel;
 	private JSlider barratransparencia;
+	
+	private JPanel simetriaPanel;
+	private JCheckBox simetria;
+	private JButton botonSimetria;
+	private int tipoSimetria = 0;
 
 
 	public VentanaMenu(ComponentePapel cp, Papel p, String usuario) {
 		setTitle("Menu");
-		setSize(new Dimension(310, 600));
+		setSize(new Dimension(310, 650));
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setLayout(new GridLayout(8,2)); 
+		setLayout(new GridLayout(9,2)); 
 
 		panelPinceles = new JPanel();
 		panelPinceles.setLayout(new GridBagLayout());
@@ -196,6 +205,7 @@ public class VentanaMenu extends JFrame {
 			}
 		});
 		panelTamanyo = new JPanel();
+		panelTamanyo.setLayout(new GridBagLayout());
 		tamanyoPng = new JLabel();
 		tamanyoPng.setIcon(new ImageIcon("iconos/size.png"));
 		panelTamanyo.getMinimumSize();
@@ -257,6 +267,7 @@ public class VentanaMenu extends JFrame {
 		});
 
 		transparenciaPanel = new JPanel();
+		transparenciaPanel.setLayout(new GridBagLayout());
 		transparenciaPanel.setBorder(BorderFactory.createEmptyBorder(0,0,5,0)); //TOC
 		transparenciaPanel.add(barratransparencia);
 		transparenciaPanel.add(new JLabel(new ImageIcon("iconos/opacidad.png")));
@@ -302,6 +313,48 @@ public class VentanaMenu extends JFrame {
 			});
 			menuMusica.add(cancionItem);
 		}
+		
+		
+		
+
+		simetria = new JCheckBox("Simetría");
+		botonSimetria = new JButton(new ImageIcon("iconos/simetria.png"));
+		botonSimetria.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				tipoSimetria++;
+				if(tipoSimetria % 2 == 0) {
+					botonSimetria.setIcon(new ImageIcon("iconos/simetria.png"));
+					cp.setSimetriaHorizontal(false);
+				} else {
+					botonSimetria.setIcon(new ImageIcon("iconos/simetria2.png"));
+					cp.setSimetriaHorizontal(true);
+				}
+			}
+		});
+		
+		simetria.setSelected(false);
+		simetria.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				if(simetria.isSelected()) {
+					cp.setSimetriaActivada(true);
+				}else {
+					cp.setSimetriaActivada(false);
+				}}
+		});
+
+		simetriaPanel = new JPanel();
+		simetriaPanel.setBorder(new LineBorder(Color.lightGray));
+		JPanel panelsimetriaBoton = new JPanel();
+		panelsimetriaBoton.add(botonSimetria);
+		simetriaPanel.setLayout(new GridLayout(1,2));
+		simetriaPanel.add(panelsimetriaBoton);
+		simetriaPanel.add(simetria);
+		simetriaPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0)); //TOC
+		simetriaPanel.getMinimumSize();
+		add(simetriaPanel);
 		
 		
 		

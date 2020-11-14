@@ -155,7 +155,8 @@ public class VentanaTexto extends JFrame {
 		int yFinal = yVentanaTexto - yPapel + 90; //Lo cuadramos con la previsualizacion
 
 		
-		Texto textoINS = new Texto(xFinal, yFinal, 0, 0, cp.getGraficos().getColor(), cp.getTamanyo(), null, 0,  texto.getText().length(), texto.getText());
+		Texto textoINS = new Texto(xFinal, yFinal, 0, 0, cp.getGraficos().getColor(), cp.getTamanyo(), null,
+				0,  texto.getText().length(), false, false, texto.getText());
 		cp.getDibujos().add(textoINS);
 		textoINS.pintarString(cp);
 		cp.forRepaint();

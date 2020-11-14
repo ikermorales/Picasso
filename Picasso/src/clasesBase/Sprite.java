@@ -20,10 +20,12 @@ public class Sprite implements Serializable{
 	private ArrayList<String> sprites;
 	private int sprite;
 	private double collisionRad;
+	private boolean simetriaActivada;
+	private boolean simetriaHorizontal;
 	
 	
 	public Sprite(int x, int y, int xV, int yV, Color color, int tamanyo, ArrayList<String> sprites, int sprite,
-			double collisionRad) {
+			double collisionRad, boolean simetriaActivada, boolean simetriaHorizontal) {
 		super();
 		this.x = x;
 		this.y = y;
@@ -34,19 +36,8 @@ public class Sprite implements Serializable{
 		this.sprites = sprites;
 		this.sprite = sprite;
 		this.collisionRad = collisionRad;
-	}
-	
-	public Sprite() {
-		super();
-		this.x = 0;
-		this.y = 0;
-		this.xV = 0;
-		this.yV = 0;
-		this.color = null;
-		this.tamanyo = 0;
-		this.sprites = null;
-		this.sprite = 0;
-		this.collisionRad = 0;
+		this.simetriaActivada = simetriaActivada;
+		this.simetriaHorizontal = simetriaHorizontal;
 	}
 	
 	
@@ -105,30 +96,52 @@ public class Sprite implements Serializable{
 	public void setTamanyo(int tamanyo) {
 		this.tamanyo = tamanyo;
 	}
-
-
-	
-	@Override
-	public String toString() {
-		return "Sprite [x=" + x + ", y=" + y + ", xV=" + xV + ", yV=" + yV + ", color=" + color + ", tamanyo=" + tamanyo
-				+ ", sprites=" + sprites + ", sprite=" + sprite + ", collisionRad=" + collisionRad + "]";
+	public boolean isSimetriaActivada() {
+		return simetriaActivada;
 	}
-	
+	public void setSimetriaActivada(boolean simetriaActivada) {
+		this.simetriaActivada = simetriaActivada;
+	}
+	public void setyV(int yV) {
+		this.yV = yV;
+	}
+	public boolean isSimetriaHorizontal() {
+		return simetriaHorizontal;
+	}
+	public void setSimetriaHorizontal(boolean simetriaHorizontal) {
+		this.simetriaHorizontal = simetriaHorizontal;
+	}
 
-	public void pintar(ComponentePapel cp, Image img) {
+
+	public void pintar(ComponentePapel cp) {
 		//cp.getGraficos().drawImage(img, x, y, tamanyo, tamanyo, color, null);
 		if(sprite == 0) {
 			cp.getGraficos().drawLine(xV, yV, x, y); 
+			if(simetriaActivada && simetriaHorizontal) {
+				cp.getGraficos().drawLine(cp.getWidth() - xV, cp.getHeight() - yV , cp.getWidth() - x, cp.getHeight() - y); 
+			} else if(simetriaActivada && !simetriaHorizontal) {
+				cp.getGraficos().drawLine(cp.getWidth() - xV, yV , cp.getWidth() - x, y); 
+			}
 		} else if(sprite == 1) {
 			cp.getGraficos().fillOval(x, y, tamanyo, tamanyo);
+			if(simetriaActivada && simetriaHorizontal) {
+				cp.getGraficos().fillOval(cp.getWidth() - x, cp.getHeight() - y, tamanyo, tamanyo); 
+			} else if(simetriaActivada && !simetriaHorizontal) {
+				cp.getGraficos().fillOval(cp.getWidth() - x, y, tamanyo, tamanyo); 
+			}
 		} else if(sprite == 2) {
 			cp.getGraficos().fillRect(x, y, tamanyo, tamanyo);
+			if(simetriaActivada && simetriaHorizontal) {
+				cp.getGraficos().fillRect(cp.getWidth() - x, cp.getHeight() - y, tamanyo, tamanyo); 
+			} else if(simetriaActivada && !simetriaHorizontal) {
+				cp.getGraficos().fillRect(cp.getWidth() - x, y, tamanyo, tamanyo); 
+			}
 		}
 		//cp.setxActual(cp.getxVieja());
 		//cp.setyActual(cp.getyVieja());
 	}
-	
-	
+
+
 }
 
 

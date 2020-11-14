@@ -6,16 +6,14 @@ public class Texto extends Sprite {
 	
 	private String contenido;
 
+	
 	public Texto(int x, int y, int xV, int yV, Color color, int tamanyo, ArrayList<String> sprites, int sprite,
-			double collisionRad, String contenido) {
-		super(x, y, xV, yV, color, tamanyo, sprites, sprite, collisionRad);
+			double collisionRad, boolean simetriaActivada, boolean simetriaHorizontal, String contenido) {
+		super(x, y, xV, yV, color, tamanyo, sprites, sprite, collisionRad, simetriaActivada, simetriaHorizontal);
 		this.contenido = contenido;
 	}
 	
-	public Texto() {
-		super();
-		this.contenido = "";
-	}
+	
 
 	@Override
 	public String toString() {
