@@ -117,25 +117,10 @@ public class Sprite implements Serializable{
 		//cp.getGraficos().drawImage(img, x, y, tamanyo, tamanyo, color, null);
 		if(sprite == 0) {
 			cp.getGraficos().drawLine(xV, yV, x, y); 
-			if(simetriaActivada && simetriaHorizontal) {
-				cp.getGraficos().drawLine(cp.getWidth() - xV, cp.getHeight() - yV , cp.getWidth() - x, cp.getHeight() - y); 
-			} else if(simetriaActivada && !simetriaHorizontal) {
-				cp.getGraficos().drawLine(cp.getWidth() - xV, yV , cp.getWidth() - x, y); 
-			}
 		} else if(sprite == 1) {
 			cp.getGraficos().fillOval(x, y, tamanyo, tamanyo);
-			if(simetriaActivada && simetriaHorizontal) {
-				cp.getGraficos().fillOval(cp.getWidth() - x, cp.getHeight() - y, tamanyo, tamanyo); 
-			} else if(simetriaActivada && !simetriaHorizontal) {
-				cp.getGraficos().fillOval(cp.getWidth() - x, y, tamanyo, tamanyo); 
-			}
 		} else if(sprite == 2) {
 			cp.getGraficos().fillRect(x, y, tamanyo, tamanyo);
-			if(simetriaActivada && simetriaHorizontal) {
-				cp.getGraficos().fillRect(cp.getWidth() - x, cp.getHeight() - y, tamanyo, tamanyo); 
-			} else if(simetriaActivada && !simetriaHorizontal) {
-				cp.getGraficos().fillRect(cp.getWidth() - x, y, tamanyo, tamanyo); 
-			}
 		}
 		//cp.setxActual(cp.getxVieja());
 		//cp.setyActual(cp.getyVieja());

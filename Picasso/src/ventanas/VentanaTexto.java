@@ -8,7 +8,6 @@ import javax.swing.border.LineBorder;
 import javax.swing.text.html.HTMLDocument.HTMLReader.BlockAction;
 
 import clasesBase.ComponentePapel;
-import clasesBase.Papel;
 import clasesBase.Texto;
 
 

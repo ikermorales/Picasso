@@ -11,7 +11,6 @@ import javax.swing.JPanel;
 import javax.swing.colorchooser.ColorSelectionModel;
 
 import clasesBase.ComponentePapel;
-import clasesBase.Papel;
 import clasesBase.Sprite;
 
 

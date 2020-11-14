@@ -9,7 +9,21 @@ public class Musica {
 	private Clip clip; //Este sirve para, con el audio getteado, playearlo.
 	private boolean activado;
 	
-		
+	
+	public Musica(AudioInputStream ais, Clip clip, boolean activado) {
+		super();
+		this.ais = ais;
+		this.clip = clip;
+		this.activado = activado;
+	}
+	
+	public Musica() {
+		super();
+		this.ais = null;
+		this.clip = null;
+		this.activado = false;
+	}
+
 	public Clip getClip() {
 		return clip;
 	}
@@ -25,9 +39,11 @@ public class Musica {
 	public void setAis(AudioInputStream ais) {
 		this.ais = ais;
 	}
+	
 	public boolean isActivado() {
 		return activado;
 	}
+	
 	public void setActivado(boolean activado) {
 		this.activado = activado;
 	}

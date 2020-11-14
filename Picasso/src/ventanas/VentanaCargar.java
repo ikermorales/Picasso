@@ -83,6 +83,7 @@ public class VentanaCargar extends JFrame implements Serializable {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
 			JOptionPane.showMessageDialog(null, "Tipo de archivo no válido.");
+			e.printStackTrace();
 		} catch(NullPointerException e) {
 			dispose();
 		}

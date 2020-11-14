@@ -34,7 +34,6 @@ import javax.swing.event.ChangeListener;
 
 import clasesBase.ComponentePapel;
 import clasesBase.Musica;
-import clasesBase.Papel;
 
 
 public class VentanaMenu extends JFrame {
@@ -89,21 +88,114 @@ public class VentanaMenu extends JFrame {
 	private JCheckBox simetria;
 	private JButton botonSimetria;
 	private int tipoSimetria = 0;
+	
+	private Border emptyBorder = BorderFactory.createEmptyBorder();
 
 
 	public VentanaMenu(ComponentePapel cp, Papel p, String usuario) {
 		setTitle("Menu");
 		setSize(new Dimension(310, 650));
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setLayout(new GridLayout(9,2)); 
+		setLayout(new GridLayout(10,1)); 
 
+
+
+		botonPaleta = new JButton("Paleta", new ImageIcon("iconos/paleta.png"));
+		botonPaleta.setBackground(Color.WHITE);
+		botonPaleta.setBorder(emptyBorder);
+		//botonPaleta.setBorder(new LineBorder(Color.LIGHT_GRAY));
+		botonPaleta.setForeground(new Color(111, 195, 179));
+		botonPaleta.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				paleta = new Paleta(cp);
+			}
+		});
+		add(botonPaleta);
+
+
+		botonProceso = new JButton("Historial", new ImageIcon("iconos/historial.png"));
+		botonProceso.setBackground(Color.WHITE);    
+		botonProceso.setBorder(emptyBorder);
+		botonProceso.setBorder(new LineBorder(Color.LIGHT_GRAY));
+		botonProceso.setForeground(new Color(111, 195, 179));
+		botonProceso.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(!(cp.getContadorImagen() <= 1)) {
+					proceso = new VentanaProceso(cp, p);
+				} else {
+					JOptionPane.showMessageDialog(null, "Dibuja algo para acceder al historial.");
+				}
+
+
+			}
+		});
+		add(botonProceso);
+
+
+		botonArcoiris = new JButton("Arcoíris", new ImageIcon("iconos/arcoiris.png"));
+		botonArcoiris.setBackground(Color.WHITE);      
+		botonArcoiris.setBorder(emptyBorder);
+		//botonArcoiris.setBorder(new LineBorder(Color.LIGHT_GRAY));
+		botonArcoiris.setForeground(new Color(111, 195, 179));
+		botonArcoiris.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				if(!cp.isRainbowActivado()) {
+					cp.setRainbowActivado(true);
+					cp.dibujarRainbow();
+					cp.getHiloArcoiris().start();
+				}
+			}
+		});
+		add(botonArcoiris);
+
+
+		botonBorrarTodo = new JButton("Nuevo dibujo", new ImageIcon("iconos/papel.png"));
+		botonBorrarTodo.setBackground(Color.WHITE);  
+		botonBorrarTodo.setBorder(emptyBorder);
+		botonBorrarTodo.setBorder(new LineBorder(Color.LIGHT_GRAY));
+		botonBorrarTodo.setForeground(new Color(111, 195, 179));
+		botonBorrarTodo.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				cp.borrarTodo();
+			}
+		});
+		add(botonBorrarTodo);
+
+
+		botonTexto = new JButton("Texto", new ImageIcon("iconos/texto.png"));
+		botonTexto.setBackground(Color.WHITE);    
+		botonTexto.setBorder(emptyBorder);
+		//botonTexto.setBorder(new LineBorder(Color.LIGHT_GRAY));
+		botonTexto.setForeground(new Color(111, 195, 179));
+		botonTexto.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				ventanaTexto = new VentanaTexto(cp, p);
+
+			}
+		});
+		add(botonTexto);
+		
+		
 		panelPinceles = new JPanel();
+		panelPinceles.setBackground(Color.WHITE);
 		panelPinceles.setLayout(new GridBagLayout());
 		pincelPng = new JLabel();
 		pincelPng.setIcon(new ImageIcon("iconos/caligrafico.png"));
-		panelPinceles.setBorder(new TitledBorder("Pinceles: "));
 		pincelesCombo = new JComboBox<>();
-		pincelesCombo.addItem("Caligrafico");
+		pincelesCombo.setBackground(Color.WHITE);
+		pincelesCombo.setForeground(new Color(111, 195, 179));
+		pincelesCombo.addItem("Caligráfico");
 		pincelesCombo.addItem("Suave");
 		pincelesCombo.addItem("Pixelado");
 
@@ -122,75 +214,19 @@ public class VentanaMenu extends JFrame {
 			}
 		});
 		panelPinceles.add(pincelesCombo);
+		panelPinceles.setBorder(new LineBorder(Color.LIGHT_GRAY));
 		panelPinceles.add(pincelPng);
 		add(panelPinceles);
-
-
-		botonPaleta = new JButton("Paleta", new ImageIcon("iconos/paleta.png"));
-		botonPaleta.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				paleta = new Paleta(cp);
-			}
-		});
-		add(botonPaleta);
-
-
-		botonProceso = new JButton("Historial", new ImageIcon("iconos/historial.png"));
-		botonProceso.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				proceso = new VentanaProceso(cp, p);
-
-
-			}
-		});
-		add(botonProceso);
-
-
-		botonArcoiris = new JButton("Arcoíris", new ImageIcon("iconos/arcoiris.png"));
-		botonArcoiris.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-
-				if(!cp.isRainbowActivado()) {
-					cp.setRainbowActivado(true);
-					cp.dibujarRainbow();
-					cp.getHiloArcoiris().start();
-				}
-			}
-		});
-		add(botonArcoiris);
-
-
-		botonBorrarTodo = new JButton("Nuevo dibujo", new ImageIcon("iconos/papel.png"));
-		botonBorrarTodo.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				cp.borrarTodo();
-			}
-		});
-		add(botonBorrarTodo);
-
-
-		botonTexto = new JButton("Texto", new ImageIcon("iconos/texto.png"));
-		botonTexto.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				ventanaTexto = new VentanaTexto(cp, p);
-
-			}
-		});
-		add(botonTexto);
+		
 
 		sliderTamanyo = new JSlider(); 
+		sliderTamanyo.setBackground(Color.WHITE);
+		sliderTamanyo.setForeground(Color.white);
+		sliderTamanyo.setBorder(new LineBorder(Color.LIGHT_GRAY));
 		sliderTamanyo.setPreferredSize(new Dimension(100, 40));
-		sliderTamanyo.setBorder(new TitledBorder("Tamaño: " + cp.getTamanyo()));
+		TitledBorder tituloTamanyo = new TitledBorder("Tamaño: " + cp.getTamanyo());
+		sliderTamanyo.setBorder(tituloTamanyo);
+		tituloTamanyo.setTitleColor(new Color(111, 195, 179));
 		sliderTamanyo.setValue(7);
 		sliderTamanyo.setPaintTicks(false);
 		sliderTamanyo.setMajorTickSpacing(20);
@@ -200,11 +236,16 @@ public class VentanaMenu extends JFrame {
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				cp.setTamanyo(sliderTamanyo.getValue());
-				sliderTamanyo.setBorder(new TitledBorder("Tamaño: " + sliderTamanyo.getValue()));
+				TitledBorder tituloTamanyo = new TitledBorder("Tamaño: " + sliderTamanyo.getValue());
+				tituloTamanyo.setTitleColor(new Color(111, 195, 179));
+				sliderTamanyo.setBorder(tituloTamanyo);
+				
 
 			}
 		});
 		panelTamanyo = new JPanel();
+		panelTamanyo.setBackground(Color.white);
+		panelTamanyo.setBorder(new LineBorder(Color.LIGHT_GRAY));
 		panelTamanyo.setLayout(new GridBagLayout());
 		tamanyoPng = new JLabel();
 		tamanyoPng.setIcon(new ImageIcon("iconos/size.png"));
@@ -213,7 +254,6 @@ public class VentanaMenu extends JFrame {
 		panelTamanyo.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0)); //TOC
 		panelTamanyo.add(sliderTamanyo);
 		panelTamanyo.add(tamanyoPng);
-		panelTamanyo.setBorder(new LineBorder(Color.LIGHT_GRAY));
 		add(panelTamanyo);
 
 
@@ -222,7 +262,11 @@ public class VentanaMenu extends JFrame {
 		menuArchivo= new JMenu("Archivo");
 		menuArchivo.setIcon(new ImageIcon("iconos/archivo.png"));
 		guardarArchivo = new JMenuItem("Guardar", new ImageIcon("iconos/guardar.png"));
+		guardarArchivo.setBackground(Color.WHITE);
+		guardarArchivo.setForeground(new Color(111, 195, 179));
 		cargarArchivo = new JMenuItem("Cargar", new ImageIcon("iconos/load.png"));
+		cargarArchivo.setBackground(Color.WHITE);
+		cargarArchivo.setForeground(new Color(111, 195, 179));
 		
 		guardarArchivo.addActionListener(new ActionListener() {
 
@@ -249,17 +293,23 @@ public class VentanaMenu extends JFrame {
 		
 		
 		barratransparencia = new JSlider(0, 255); 
+		barratransparencia.setBackground(Color.WHITE);
 		barratransparencia.setPreferredSize(new Dimension(140,40));
 		barratransparencia.setSize(getMinimumSize());
 		barratransparencia.setValue(255);
 		barratransparencia.setMajorTickSpacing(100);
 		barratransparencia.setMajorTickSpacing(20);
-		barratransparencia.setBorder(new TitledBorder("Opacidad: " + barratransparencia.getValue())); //Tengo que cambiar el nombre, pues la transparencia al máximo es opacidad.
+		TitledBorder tituloTransparencia = new TitledBorder("Opacidad: " + barratransparencia.getValue());
+		tituloTransparencia.setTitleColor(new Color(111, 195, 179));
+		barratransparencia.setBorder(tituloTransparencia); 
 		barratransparencia.addChangeListener(new ChangeListener() {
 			
 			@Override
 			public void stateChanged(ChangeEvent arg0) {
-				barratransparencia.setBorder(new TitledBorder("Opacidad: " + barratransparencia.getValue()));
+				TitledBorder tituloTransparencia = new TitledBorder("Opacidad: " + barratransparencia.getValue());
+				tituloTransparencia.setTitleColor(new Color(111, 195, 179));
+				barratransparencia.setBorder(tituloTransparencia); 
+			
 				Color colorActual = cp.getGraficos().getColor();
 				cp.getGraficos().setColor(new Color(colorActual.getRed(), colorActual.getGreen(), colorActual.getBlue(), barratransparencia.getValue()));
 				
@@ -267,6 +317,7 @@ public class VentanaMenu extends JFrame {
 		});
 
 		transparenciaPanel = new JPanel();
+		transparenciaPanel.setBackground(Color.white);
 		transparenciaPanel.setLayout(new GridBagLayout());
 		transparenciaPanel.setBorder(BorderFactory.createEmptyBorder(0,0,5,0)); //TOC
 		transparenciaPanel.add(barratransparencia);
@@ -281,6 +332,8 @@ public class VentanaMenu extends JFrame {
 		barra.add(menuMusica);
 	
 		stop = new JMenuItem("Stop", new ImageIcon("iconos/mute.png"));
+		stop.setBackground(Color.WHITE);
+		stop.setForeground(new Color(111, 195, 179));
 		stop.addActionListener(new ActionListener() {
 			
 			@Override
@@ -303,6 +356,8 @@ public class VentanaMenu extends JFrame {
 		
 		for (String cancion : canciones) {
 			JMenuItem cancionItem = new JMenuItem(cancion, new ImageIcon("iconos/" + cancion + ".png"));
+			cancionItem.setBackground(Color.WHITE);
+			cancionItem.setForeground(new Color(111, 195, 179));
 			cancionItem.addActionListener(new ActionListener() {
 				
 				@Override
@@ -318,7 +373,10 @@ public class VentanaMenu extends JFrame {
 		
 
 		simetria = new JCheckBox("Simetría");
+		simetria.setForeground(new Color(111, 195, 179));
+		simetria.setBackground(Color.WHITE);
 		botonSimetria = new JButton(new ImageIcon("iconos/simetria.png"));
+		botonSimetria.setBackground(new Color(111, 195, 179));
 		botonSimetria.addActionListener(new ActionListener() {
 			
 			@Override
@@ -347,7 +405,9 @@ public class VentanaMenu extends JFrame {
 
 		simetriaPanel = new JPanel();
 		simetriaPanel.setBorder(new LineBorder(Color.lightGray));
+		simetriaPanel.setBackground(Color.WHITE);
 		JPanel panelsimetriaBoton = new JPanel();
+		panelsimetriaBoton.setBackground(Color.WHITE);
 		panelsimetriaBoton.add(botonSimetria);
 		simetriaPanel.setLayout(new GridLayout(1,2));
 		simetriaPanel.add(panelsimetriaBoton);

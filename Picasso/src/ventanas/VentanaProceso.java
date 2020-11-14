@@ -10,7 +10,6 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
 import clasesBase.ComponentePapel;
-import clasesBase.Papel;
 
 
 public class VentanaProceso extends JFrame{

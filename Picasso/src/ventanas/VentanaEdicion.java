@@ -16,7 +16,6 @@ import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 
 import clasesBase.ComponentePapel;
-import clasesBase.Papel;
 import clasesBase.Sprite;
 
 public class VentanaEdicion extends JFrame{

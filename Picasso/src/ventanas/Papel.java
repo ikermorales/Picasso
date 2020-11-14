@@ -1,4 +1,4 @@
-package clasesBase;
+package ventanas;
 import java.awt.GridLayout;  
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+
+import clasesBase.ComponentePapel;
 
 public class Papel extends JFrame {
 
