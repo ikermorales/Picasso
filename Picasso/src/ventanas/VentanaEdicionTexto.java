@@ -38,6 +38,8 @@ public class VentanaEdicionTexto extends JFrame{
 		setLocation(MouseInfo.getPointerInfo().getLocation());
 
 		botonEliminar = new JButton("Eliminar");
+		botonEliminar.setBackground(new Color(111, 195, 179));
+		botonEliminar.setForeground(Color.WHITE);
 		botonEliminar.setHorizontalAlignment(SwingConstants.LEFT);
 		botonEliminar.addActionListener(new ActionListener() {
 
@@ -56,6 +58,8 @@ public class VentanaEdicionTexto extends JFrame{
 
 
 		botonRecolorear = new JButton("Recolor");
+		botonRecolorear.setBackground(new Color(111, 195, 179));
+		botonRecolorear.setForeground(Color.WHITE);
 		botonRecolorear.setHorizontalAlignment(SwingConstants.LEFT);
 		botonRecolorear.addActionListener(new ActionListener() {
 
@@ -68,6 +72,8 @@ public class VentanaEdicionTexto extends JFrame{
 		add(botonRecolorear);
 
 		botonString = new JButton("Cambiar contenido");
+		botonString.setBackground(new Color(111, 195, 179));
+		botonString.setForeground(Color.WHITE);
 		botonString.setHorizontalAlignment(SwingConstants.LEFT);
 		botonString.addActionListener(new ActionListener() {
 
@@ -102,6 +108,8 @@ public class VentanaEdicionTexto extends JFrame{
 		add(botonString);
 
 		cancelar = new JButton("Cancelar");
+		cancelar.setBackground(new Color(111, 195, 179));
+		cancelar.setForeground(Color.WHITE);
 		cancelar.setHorizontalAlignment(SwingConstants.LEFT);
 		cancelar.addActionListener(new ActionListener() {
 
