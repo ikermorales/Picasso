@@ -2,6 +2,8 @@ package ventanas;
 import java.awt.*; 
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -38,7 +40,7 @@ public class VentanaTexto extends JFrame {
 	private int yFinal;
 	
 
-	public VentanaTexto(ComponentePapel cp, Papel p) {
+	public VentanaTexto(ComponentePapel cp, Papel p, Logger logger) {
 		setTitle("Insertar Texto");
 		setSize(300,200);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -62,6 +64,7 @@ public class VentanaTexto extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				dispose();
 				cp.getTopLevelAncestor().requestFocus();
+				logger.log(Level.INFO, "No se ha insertado texto.");
 
 			}
 		});
@@ -88,6 +91,7 @@ public class VentanaTexto extends JFrame {
 				p.repaint();
 				cp.forRepaint();
 				cp.generarEstado(p);
+				logger.log(Level.INFO, "Se ha insertado texto en el dibujo.");
 			}
 		});
 		add(panelPrevisualizacion);
@@ -153,9 +157,10 @@ public class VentanaTexto extends JFrame {
 		int xFinal = xVentanaTexto - xPapel + 128; //
 		int yFinal = yVentanaTexto - yPapel + 90; //Lo cuadramos con la previsualizacion
 
-		
-		Texto textoINS = new Texto(xFinal, yFinal, 0, 0, cp.getGraficos().getColor(), cp.getTamanyo(), null,
-				0,  texto.getText().length(), false, false, texto.getText());
+		Color colorActual = cp.getGraficos().getColor();
+		cp.getGraficos().setColor(new Color(colorActual.getRed(), colorActual.getGreen(), colorActual.getBlue(), cp.getOpacidad()));
+				
+		Texto textoINS = new Texto(xFinal, yFinal, 0, 0, cp.getGraficos().getColor(), cp.getOpacidad() ,cp.getTamanyo(), null, 0,  texto.getText().length(), false, false, texto.getText());
 		cp.getDibujos().add(textoINS);
 		textoINS.pintarString(cp);
 		cp.forRepaint();
