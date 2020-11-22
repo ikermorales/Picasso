@@ -1,0 +1,42 @@
+nov 22, 2020 4:36:02 PM Picasso main
+INFORMACIÓN: Programa Inicializado
+nov 22, 2020 4:36:13 PM ventanas.VentanaIniciarSesion$1 actionPerformed
+INFORMACIÓN: Se ha intentado iniciar sesion, pero los datos han sido erroneos.
+nov 22, 2020 4:36:16 PM ventanas.VentanaIniciarSesion$2 actionPerformed
+INFORMACIÓN: Se ha creado un nuevo usuario.
+nov 22, 2020 4:36:18 PM ventanas.VentanaIniciarSesion$1 actionPerformed
+INFORMACIÓN: Se ha iniciado sesion con david.
+nov 22, 2020 4:36:22 PM ventanas.Papel <init>
+INFORMACIÓN: Papel creado correctamente.
+nov 22, 2020 4:36:22 PM ventanas.VentanaMenu <init>
+INFORMACIÓN: Menu inicializado correctamente.
+nov 22, 2020 4:37:08 PM ventanas.VentanaMenu$1 actionPerformed
+INFORMACIÓN: Se ha abierto la paleta de colores.
+nov 22, 2020 4:37:08 PM ventanas.VentanaMenu$1 actionPerformed
+INFORMACIÓN: Se ha abierto la paleta de colores.
+nov 22, 2020 4:37:09 PM ventanas.Paleta$1 setSelectedColor
+INFORMACIÓN: Se ha cambiado de color a : java.awt.Color[r=255,g=153,b=0]
+nov 22, 2020 4:37:22 PM ventanas.VentanaMenu$6 actionPerformed
+INFORMACIÓN: Se ha cambiado de pincel.
+nov 22, 2020 4:37:32 PM ventanas.VentanaMenu$14 itemStateChanged
+INFORMACIÓN: Simetria activada.
+nov 22, 2020 4:37:40 PM ventanas.VentanaMenu$13 actionPerformed
+INFORMACIÓN: Se ha cambiado el tipo de simetría.
+nov 22, 2020 4:37:54 PM ventanas.VentanaEdicion$2 actionPerformed
+INFORMACIÓN: Se ha abierto la paleta para recolorear el dibujo.
+nov 22, 2020 4:37:55 PM ventanas.PaletaRecolor$1 setSelectedColor
+INFORMACIÓN: Se ha cambaido el color del dibujo a : java.awt.Color[r=51,g=0,b=255]
+nov 22, 2020 4:37:59 PM ventanas.VentanaEdicion$2 actionPerformed
+INFORMACIÓN: Se ha abierto la paleta para recolorear el dibujo.
+nov 22, 2020 4:38:00 PM ventanas.PaletaRecolor$1 setSelectedColor
+INFORMACIÓN: Se ha cambaido el color del dibujo a : java.awt.Color[r=204,g=204,b=255]
+nov 22, 2020 4:38:20 PM ventanas.VentanaEdicion$2 actionPerformed
+INFORMACIÓN: Se ha abierto la paleta para recolorear el dibujo.
+nov 22, 2020 4:38:21 PM ventanas.PaletaRecolor$1 setSelectedColor
+INFORMACIÓN: Se ha cambaido el color del dibujo a : java.awt.Color[r=51,g=51,b=0]
+nov 22, 2020 4:38:43 PM ventanas.VentanaEdicion$2 actionPerformed
+INFORMACIÓN: Se ha abierto la paleta para recolorear el dibujo.
+nov 22, 2020 4:39:15 PM ventanas.VentanaEdicion$2 actionPerformed
+INFORMACIÓN: Se ha abierto la paleta para recolorear el dibujo.
+nov 22, 2020 4:39:19 PM ventanas.PaletaRecolor$1 setSelectedColor
+INFORMACIÓN: Se ha cambaido el color del dibujo a : java.awt.Color[r=51,g=255,b=255]
