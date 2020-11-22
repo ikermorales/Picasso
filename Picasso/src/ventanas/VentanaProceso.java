@@ -5,6 +5,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.AdjustmentListener;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
@@ -23,7 +26,7 @@ public class VentanaProceso extends JFrame{
 	private HashMap<Integer, String> hashPaginas = new HashMap<>();
 
 
-	public VentanaProceso(ComponentePapel cp, Papel p) {  
+	public VentanaProceso(ComponentePapel cp, Papel p, Logger logger) {  
 		setTitle("Proceso");
 		setSize(240, 385);
 		setLocationRelativeTo(null);
@@ -59,7 +62,6 @@ public class VentanaProceso extends JFrame{
 					separador.setLabel(pagina + " / " + (cp.getContadorImagen() - 1) ); 
 					repaint();
 					validate();
-					System.out.println(pagina);
 				}
 
 			}
@@ -69,7 +71,7 @@ public class VentanaProceso extends JFrame{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (pagina >= 1) {	//Este ta bien
+				if (pagina >= 1) {
 					pagina--;
 					ImageIcon ic = new ImageIcon(hashPaginas.get(pagina));
 					Image imagen = ic.getImage(); 
@@ -107,6 +109,8 @@ public class VentanaProceso extends JFrame{
 				p.repaint();
 				cp.forRepaint();
 				cp.generarEstado(p);
+				
+				logger.log(Level.INFO, "Se ha cargado un dibujo del historial.");
 			}
 		});
 		
