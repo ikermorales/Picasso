@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JColorChooser;
 import javax.swing.JFrame;
@@ -17,7 +19,7 @@ import clasesBase.Sprite;
 public class PaletaRecolor extends JFrame{
 	private JColorChooser paletaC;
 
-	public PaletaRecolor(ArrayList<Sprite> sprites, ComponentePapel cp, Papel p) {
+	public PaletaRecolor(ArrayList<Sprite> sprites, ComponentePapel cp, Papel p, Logger logger) {
 		setTitle("Paleta de colores");
 		setSize(660,275);
 		setVisible(true);
@@ -37,6 +39,7 @@ public class PaletaRecolor extends JFrame{
 				p.repaint();
 				cp.forRepaint();
 				cp.generarEstado(p);
+				logger.log(Level.INFO, "Se ha cambaido el color del dibujo a : " + color);
 			}
 			@Override
 			public void removeChangeListener(javax.swing.event.ChangeListener listener) {				
@@ -51,7 +54,7 @@ public class PaletaRecolor extends JFrame{
 		});
 		setResizable(false);
 		paletaC.setPreviewPanel(new JPanel());
-		add(paletaC);
+		add(paletaC);		
 	}
 
 	
