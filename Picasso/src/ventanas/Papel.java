@@ -1,39 +1,59 @@
-import java.util.logging.FileHandler;
-import java.util.logging.Handler;
+package ventanas;
+import java.awt.GridLayout;  
+import java.awt.event.*;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
-import ventanas.VentanaIniciarSesion;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
-public class Picasso {
+import clasesBase.ComponentePapel;
 
-	private static VentanaIniciarSesion ventanaInicial;
-	private static final Logger LOGGER = Logger.getLogger(Picasso.class.getName());
+public class Papel extends JFrame {
 
-	public static void main(String[] args) {
-
-		try {
-			FileHandler fH = new FileHandler("MyLogFile.log", 8096, 1, false);
-			for (Handler handler : LOGGER.getHandlers()) {
-				LOGGER.removeHandler(handler);
-			}
-			SimpleFormatter formatter = new SimpleFormatter();  
-			fH.setFormatter(formatter);
-			LOGGER.addHandler(fH);
+	private static ComponentePapel compPapel;
+	private int anchura = 600;
+	private int altura = 800;
 
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	public Papel(Logger logger) {
+		setTitle("Picasso");
+		setSize(anchura, altura);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setLayout(new GridLayout(1,1));
+		setResizable(false);
+		setLocationRelativeTo(null);
 
-		LOGGER.log(Level.INFO, "Programa Inicializado");
-
-
-
-
-		ventanaInicial = new VentanaIniciarSesion(LOGGER);
-
+		compPapel = new ComponentePapel(this, logger);
+		add(compPapel);
+		
+		
+		setVisible(true);
+		logger.log(Level.INFO, "Papel creado correctamente.");
 
 	}
-}
+	
+	
+	public int getAnchura() {
+		return anchura;
+	}
+	public void setAnchura(int anchura) {
+		this.anchura = anchura;
+	}
+
+	public int getAltura() {
+		return altura;
+	}
+	public void setAltura(int altura) {
+		this.altura = altura;
+	}
+	public ComponentePapel getCompPapel() {
+		return compPapel;
+	}
+	public void setCompPapel(ComponentePapel compPapel) {
+		this.compPapel = compPapel;
+	}
+	
+} 
