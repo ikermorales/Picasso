@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -92,7 +93,7 @@ public class VentanaMenu extends JFrame {
 	private Border emptyBorder = BorderFactory.createEmptyBorder();
 
 
-	public VentanaMenu(ComponentePapel cp, Papel p, String usuario) {
+	public VentanaMenu(ComponentePapel cp, Papel p, String usuario, Logger logger) {
 		setTitle("Menu");
 		setSize(new Dimension(310, 650));
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -109,7 +110,8 @@ public class VentanaMenu extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				paleta = new Paleta(cp);
+				paleta = new Paleta(cp, logger);
+				logger.info( "Se ha abierto la paleta de colores.");
 			}
 		});
 		add(botonPaleta);
@@ -125,7 +127,8 @@ public class VentanaMenu extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if(!(cp.getContadorImagen() <= 1)) {
-					proceso = new VentanaProceso(cp, p);
+					proceso = new VentanaProceso(cp, p, logger);
+					logger.info( "Se ha abierto el Historial.");
 				} else {
 					JOptionPane.showMessageDialog(null, "Dibuja algo para acceder al historial.");
 				}
@@ -149,6 +152,7 @@ public class VentanaMenu extends JFrame {
 				if(!cp.isRainbowActivado()) {
 					cp.setRainbowActivado(true);
 					cp.dibujarRainbow();
+					logger.info( "Pintura Arcoiris activado.");
 					cp.getHiloArcoiris().start();
 				}
 			}
@@ -166,6 +170,7 @@ public class VentanaMenu extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				cp.borrarTodo();
+				logger.info( "Se ha borrado todo el dibujo.");
 			}
 		});
 		add(botonBorrarTodo);
@@ -180,7 +185,8 @@ public class VentanaMenu extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				ventanaTexto = new VentanaTexto(cp, p);
+				ventanaTexto = new VentanaTexto(cp, p, logger);
+				logger.info( "Se ha abierto la ventana para insertar texto.");
 
 			}
 		});
@@ -211,6 +217,7 @@ public class VentanaMenu extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				cp.setSelectorSprite(pincelesCombo.getSelectedIndex());
 				pincelPng.setIcon(new ImageIcon("iconos/" + pincelesCombo.getSelectedItem() + ".png"));
+				logger.info( "Se ha cambiado de pincel.");
 			}
 		});
 		panelPinceles.add(pincelesCombo);
@@ -272,8 +279,8 @@ public class VentanaMenu extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				ventanaGuardar = new VentanaGuardar(usuario, cp.getHashDibujos(), cp);
-				
+				ventanaGuardar = new VentanaGuardar(usuario, cp.getHashDibujos(), cp, logger);
+				logger.info( "Se ha abierto la ventana para guardar archivos.");
 			}
 		});
 		
@@ -281,7 +288,8 @@ public class VentanaMenu extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				ventanaCargar = new VentanaCargar(usuario, cp.getHashDibujos(), cp);
+				ventanaCargar = new VentanaCargar(usuario, cp.getHashDibujos(), cp, logger);
+				logger.info( "Se ha abierto la ventana para cargar archivos.");
 
 			}
 		});
@@ -310,9 +318,7 @@ public class VentanaMenu extends JFrame {
 				tituloTransparencia.setTitleColor(new Color(111, 195, 179));
 				barratransparencia.setBorder(tituloTransparencia); 
 			
-				Color colorActual = cp.getGraficos().getColor();
-				cp.getGraficos().setColor(new Color(colorActual.getRed(), colorActual.getGreen(), colorActual.getBlue(), barratransparencia.getValue()));
-				
+				cp.setOpacidad(barratransparencia.getValue());
 			}
 		});
 
@@ -340,6 +346,7 @@ public class VentanaMenu extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				m.setActivado(false);
 				m.playear(".wav");
+				logger.info( "Se ha parado la música.");
 			}
 		});
 		menuMusica.add(stop);
@@ -364,6 +371,7 @@ public class VentanaMenu extends JFrame {
 				public void actionPerformed(ActionEvent e) {
 					m.setActivado(true);
 					m.playear("musica/" + cancion + ".wav");
+					logger.info( "Funcion de musica activada: " + cancion + "escogida.");
 				}
 			});
 			menuMusica.add(cancionItem);
@@ -382,6 +390,7 @@ public class VentanaMenu extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				tipoSimetria++;
+				logger.info( "Se ha cambiado el tipo de simetría.");
 				if(tipoSimetria % 2 == 0) {
 					botonSimetria.setIcon(new ImageIcon("iconos/simetria.png"));
 					cp.setSimetriaHorizontal(false);
@@ -398,8 +407,10 @@ public class VentanaMenu extends JFrame {
 			public void itemStateChanged(ItemEvent e) {
 				if(simetria.isSelected()) {
 					cp.setSimetriaActivada(true);
+					logger.info( "Simetria activada.");
 				}else {
 					cp.setSimetriaActivada(false);
+					logger.info( "Simetria desactivada.");
 				}}
 		});
 
@@ -421,6 +432,7 @@ public class VentanaMenu extends JFrame {
 		
 
 		setVisible(true);
+		logger.info("Menu inicializado correctamente.");
 	}
 
 
