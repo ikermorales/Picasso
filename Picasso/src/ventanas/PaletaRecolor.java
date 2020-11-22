@@ -32,7 +32,7 @@ public class PaletaRecolor extends JFrame{
 			public void setSelectedColor(Color color) {
 				for (Iterator<Sprite> spriteIterador = sprites.iterator(); spriteIterador.hasNext();) {
 					Sprite sprite = spriteIterador.next();
-					sprite.setColor(color);
+					sprite.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), cp.getOpacidad()));
 				}
 				dispose();
 				p.toFront();
