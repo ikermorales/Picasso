@@ -1,6 +1,8 @@
 package ventanas;
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JColorChooser;
 import javax.swing.JFrame;
@@ -14,7 +16,7 @@ public class Paleta extends JFrame{
 	private JColorChooser paletaC;
 	private Color colorEscogido;
 
-	public Paleta(ComponentePapel cp) {
+	public Paleta(ComponentePapel cp, Logger logger) {
 		setTitle("Paleta de colores");
 		setSize(660,275);
 		setVisible(true);
@@ -27,7 +29,7 @@ public class Paleta extends JFrame{
 			public void setSelectedColor(Color color) {
 				cp.setRainbowActivado(false);
 				cp.getGraficos().setPaint(color);
-				
+				logger.log(Level.INFO, "Se ha cambiado de color a : " + color);
 				paletaC.setBackground(color);
 			}
 			@Override
