@@ -1,55 +1,39 @@
-package ventanas;
-import java.awt.GridLayout;  
-import java.awt.event.*;
-import java.util.ArrayList;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import ventanas.VentanaIniciarSesion;
 
-import clasesBase.ComponentePapel;
+public class Picasso {
 
-public class Papel extends JFrame {
+	private static VentanaIniciarSesion ventanaInicial;
+	private static final Logger LOGGER = Logger.getLogger(Picasso.class.getName());
 
-	private static ComponentePapel compPapel;
-	private int anchura = 600;
-	private int altura = 800;
+	public static void main(String[] args) {
+
+		try {
+			FileHandler fH = new FileHandler("MyLogFile.log", 8096, 1, false);
+			for (Handler handler : LOGGER.getHandlers()) {
+				LOGGER.removeHandler(handler);
+			}
+			SimpleFormatter formatter = new SimpleFormatter();  
+			fH.setFormatter(formatter);
+			LOGGER.addHandler(fH);
 
 
-	public Papel() {
-		setTitle("Picasso");
-		setSize(anchura, altura);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setLayout(new GridLayout(1,1));
-		setResizable(false);
-		setLocationRelativeTo(null);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
-		compPapel = new ComponentePapel(this);
-		add(compPapel);
-		
-		
-		setVisible(true);
+		LOGGER.log(Level.INFO, "Programa Inicializado");
+
+
+
+
+		ventanaInicial = new VentanaIniciarSesion(LOGGER);
+
+
 	}
-	
-	
-	public int getAnchura() {
-		return anchura;
-	}
-	public void setAnchura(int anchura) {
-		this.anchura = anchura;
-	}
-
-	public int getAltura() {
-		return altura;
-	}
-	public void setAltura(int altura) {
-		this.altura = altura;
-	}
-	public ComponentePapel getCompPapel() {
-		return compPapel;
-	}
-	public void setCompPapel(ComponentePapel compPapel) {
-		this.compPapel = compPapel;
-	}
-	
-} 
+}
