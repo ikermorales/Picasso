@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
@@ -54,6 +55,7 @@ public class ComponentePapel extends JComponent {
 
 	private static int pincel;
 	private Color colorActual;
+	private int opacidad = 255;
 
 	private static int tamanyo = 8;
 
@@ -90,7 +92,7 @@ public class ComponentePapel extends JComponent {
 	private boolean simetriaHorizontal;
 	
 	
-	public ComponentePapel(Papel p) {
+	public ComponentePapel(Papel p, Logger logger) {
 
 		setDoubleBuffered(false);
 		setFocusable(true);
@@ -129,11 +131,11 @@ public class ComponentePapel extends JComponent {
 							double distance = Math.sqrt(dx * dx + dy * dy);
 
 							if(distance < sprite.getCollisionRad() && sprite.getClass().getName().contains("Texto")) {
-								ventanaEdicionTexto = new VentanaEdicionTexto(ComponentePapel.this, spritesTodos, p);
+								ventanaEdicionTexto = new VentanaEdicionTexto(ComponentePapel.this, spritesTodos, p, logger);
 								forRepaint();
 								break;
 							} else if(distance < sprite.getCollisionRad() && sprite.getClass().getName().contains("Sprite")) {
-								ventanaEdicion = new VentanaEdicion(ComponentePapel.this, spritesTodos, p);
+								ventanaEdicion = new VentanaEdicion(ComponentePapel.this, spritesTodos, p, logger);
 								forRepaint();
 								break;
 							}
@@ -183,13 +185,16 @@ public class ComponentePapel extends JComponent {
 
 					deshaciendo = false;
 
-					pixelado = new Sprite(xActual, yActual, xVieja, yVieja, graficos.getColor(), tamanyo, pinceles, selectorSprite, tamanyo, simetriaActivada, simetriaHorizontal);
+					Color colorActual = getGraficos().getColor();
+					getGraficos().setColor(new Color(colorActual.getRed(), colorActual.getGreen(), colorActual.getBlue(), opacidad));
+					
+					pixelado = new Sprite(xActual, yActual, xVieja, yVieja, graficos.getColor(), opacidad, tamanyo, pinceles, selectorSprite, tamanyo, simetriaActivada, simetriaHorizontal);
 					
 					if(simetriaActivada && simetriaHorizontal) {
-						Sprite pixeladoSimetrico = new Sprite(ComponentePapel.this.getWidth() - xActual, ComponentePapel.this.getHeight() - yActual, ComponentePapel.this.getWidth() - xVieja, ComponentePapel.this.getHeight() - yVieja, graficos.getColor(), tamanyo, pinceles, selectorSprite, tamanyo, simetriaActivada, simetriaHorizontal);
+						Sprite pixeladoSimetrico = new Sprite(ComponentePapel.this.getWidth() - xActual, ComponentePapel.this.getHeight() - yActual, ComponentePapel.this.getWidth() - xVieja, ComponentePapel.this.getHeight() - yVieja, graficos.getColor(), opacidad, tamanyo, pinceles, selectorSprite, tamanyo, simetriaActivada, simetriaHorizontal);
 						dibujos.add(pixeladoSimetrico);
 					} else if (simetriaActivada && !simetriaHorizontal) {
-						Sprite pixeladoSimetrico = new Sprite(ComponentePapel.this.getWidth() - xActual, yActual, ComponentePapel.this.getWidth() - xVieja, yVieja, graficos.getColor(), tamanyo, pinceles, selectorSprite, tamanyo, simetriaActivada, simetriaHorizontal);
+						Sprite pixeladoSimetrico = new Sprite(ComponentePapel.this.getWidth() - xActual, yActual, ComponentePapel.this.getWidth() - xVieja, yVieja, graficos.getColor(), opacidad, tamanyo, pinceles, selectorSprite, tamanyo, simetriaActivada, simetriaHorizontal);
 						dibujos.add(pixeladoSimetrico);
 					}
 					
@@ -646,6 +651,20 @@ public class ComponentePapel extends JComponent {
 
 	public void setSimetriaHorizontal(boolean simetriaHorizontal) {
 		this.simetriaHorizontal = simetriaHorizontal;
+	}
+
+
+
+
+	public int getOpacidad() {
+		return opacidad;
+	}
+
+
+
+
+	public void setOpacidad(int opacidad) {
+		this.opacidad = opacidad;
 	}
 	
 	
