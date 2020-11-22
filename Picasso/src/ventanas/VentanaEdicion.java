@@ -7,6 +7,8 @@ import java.awt.MouseInfo;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
@@ -26,7 +28,7 @@ public class VentanaEdicion extends JFrame{
 	private Color recolor;
 	private PaletaRecolor paletaRecolor;
 
-	public VentanaEdicion(ComponentePapel cp, ArrayList<Sprite> sprites, Papel p){
+	public VentanaEdicion(ComponentePapel cp, ArrayList<Sprite> sprites, Papel p, Logger logger){
 		setTitle("Editar dibujo");
 		setSize(200, 50);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -63,7 +65,8 @@ public class VentanaEdicion extends JFrame{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				paletaRecolor = new PaletaRecolor(sprites, cp, p);
+				paletaRecolor = new PaletaRecolor(sprites, cp, p, logger);
+				logger.log(Level.INFO, "Se ha abierto la paleta para recolorear el dibujo.");
 				dispose();
 			}
 		});
@@ -78,6 +81,7 @@ public class VentanaEdicion extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				dispose();
+				logger.log(Level.INFO, "Se ha cerrado la ventana para editar dibujo.");
 			}
 		});
 		add(cancelar);
