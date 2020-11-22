@@ -6,6 +6,8 @@ import java.awt.MouseInfo;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
@@ -28,7 +30,7 @@ public class VentanaEdicionTexto extends JFrame{
 	private PaletaRecolor paletaRecolor;
 	private JButton botonString;
 
-	public VentanaEdicionTexto(ComponentePapel cp, ArrayList<Sprite> sprites, Papel p){
+	public VentanaEdicionTexto(ComponentePapel cp, ArrayList<Sprite> sprites, Papel p, Logger logger){
 		setTitle("Editar Texto");
 		setSize(200, 67);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -51,6 +53,8 @@ public class VentanaEdicionTexto extends JFrame{
 					cp.forRepaint();
 				}
 				cp.forRepaint();
+				logger.log(Level.INFO, "Se ha eliminado el texto dibujado.");
+
 				dispose();
 			}
 		});
@@ -65,7 +69,8 @@ public class VentanaEdicionTexto extends JFrame{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				paletaRecolor = new PaletaRecolor(sprites, cp, p);
+				paletaRecolor = new PaletaRecolor(sprites, cp, p, logger);
+				logger.log(Level.INFO, "Se ha abierto la paleta para cambiar el color del texto dibujado.");
 				dispose();
 			}
 		});
@@ -94,6 +99,7 @@ public class VentanaEdicionTexto extends JFrame{
 						p.repaint();
 						cp.forRepaint();
 						cp.generarEstado(p);
+						logger.log(Level.INFO, "Se ha cambiado el contenido del texto dibujado.");
 					} else {
 						dispose();
 					}
@@ -116,6 +122,7 @@ public class VentanaEdicionTexto extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				dispose();
+				logger.log(Level.INFO, "Se ha cancelado la edicion del texto dibujado.");
 			}
 		});
 		add(cancelar);
