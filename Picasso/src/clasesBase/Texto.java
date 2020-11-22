@@ -6,23 +6,13 @@ public class Texto extends Sprite {
 	
 	private String contenido;
 
-	
-	public Texto(int x, int y, int xV, int yV, Color color, int tamanyo, ArrayList<String> sprites, int sprite,
-			double collisionRad, boolean simetriaActivada, boolean simetriaHorizontal, String contenido) {
-		super(x, y, xV, yV, color, tamanyo, sprites, sprite, collisionRad, simetriaActivada, simetriaHorizontal);
+	public Texto(int x, int y, int xV, int yV, Color color, int opacidad, int tamanyo, ArrayList<String> sprites,
+			int sprite, double collisionRad, boolean simetriaActivada, boolean simetriaHorizontal, String contenido) {
+		super(x, y, xV, yV, color, opacidad, tamanyo, sprites, sprite, collisionRad, simetriaActivada,
+				simetriaHorizontal);
 		this.contenido = contenido;
 	}
-	
-	
 
-	@Override
-	public String toString() {
-		return "Texto [contenido=" + contenido + ", getX()=" + getX() + ", getY()=" + getY() + ", getSprites()="
-				+ getSprites() + ", getSprite()=" + getSprite() + ", getCollisionRad()=" + getCollisionRad()
-				+ ", getxV()=" + getxV() + ", getyV()=" + getyV() + ", getColor()=" + getColor() + ", getTamanyo()="
-				+ getTamanyo() + ", toString()=" + super.toString() + ", getClass()=" + getClass() + ", hashCode()="
-				+ hashCode() + "]";
-	}
 
 	public String getContenido() {
 		return contenido;
