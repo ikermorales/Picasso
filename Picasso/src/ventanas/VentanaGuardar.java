@@ -11,6 +11,8 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -23,7 +25,8 @@ public class VentanaGuardar extends JFrame implements Serializable {
 	private JButton confirmar;
 	private JTextField cajaNombre;
 
-	public VentanaGuardar(String usuarioEscogido,  HashMap<Integer, ArrayList<ArrayList<Sprite>>> hashDibujos, ComponentePapel cp) {
+	public VentanaGuardar(String usuarioEscogido,  HashMap<Integer, ArrayList<ArrayList<Sprite>>> hashDibujos,
+			ComponentePapel cp, Logger logger) {
 		setTitle("Guardar");
 		setSize(350,100);
 		setVisible(true);
@@ -40,6 +43,7 @@ public class VentanaGuardar extends JFrame implements Serializable {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				guardarDibujo(usuarioEscogido, hashDibujos, cp);
+				logger.log(Level.INFO, "Se ha guardado del dibujo en la carpeta de : " + usuarioEscogido);
 				dispose();
 
 			}
