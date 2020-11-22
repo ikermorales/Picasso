@@ -16,6 +16,7 @@ public class Sprite implements Serializable{
 	private int xV;
 	private int yV;
 	private Color color;
+	private int opacidad;
 	private int tamanyo;
 	private ArrayList<String> sprites;
 	private int sprite;
@@ -23,15 +24,17 @@ public class Sprite implements Serializable{
 	private boolean simetriaActivada;
 	private boolean simetriaHorizontal;
 	
+		
 	
-	public Sprite(int x, int y, int xV, int yV, Color color, int tamanyo, ArrayList<String> sprites, int sprite,
-			double collisionRad, boolean simetriaActivada, boolean simetriaHorizontal) {
+	public Sprite(int x, int y, int xV, int yV, Color color, int opacidad, int tamanyo, ArrayList<String> sprites,
+			int sprite, double collisionRad, boolean simetriaActivada, boolean simetriaHorizontal) {
 		super();
 		this.x = x;
 		this.y = y;
 		this.xV = xV;
 		this.yV = yV;
 		this.color = color;
+		this.opacidad = opacidad;
 		this.tamanyo = tamanyo;
 		this.sprites = sprites;
 		this.sprite = sprite;
@@ -39,8 +42,6 @@ public class Sprite implements Serializable{
 		this.simetriaActivada = simetriaActivada;
 		this.simetriaHorizontal = simetriaHorizontal;
 	}
-	
-	
 	
 	public int getX() {
 		return x;
@@ -111,7 +112,12 @@ public class Sprite implements Serializable{
 	public void setSimetriaHorizontal(boolean simetriaHorizontal) {
 		this.simetriaHorizontal = simetriaHorizontal;
 	}
-
+	public int getOpacidad() {
+		return opacidad;
+	}
+	public void setOpacidad(int opacidad) {
+		this.opacidad = opacidad;
+	}
 
 	public void pintar(ComponentePapel cp) {
 		//cp.getGraficos().drawImage(img, x, y, tamanyo, tamanyo, color, null);
