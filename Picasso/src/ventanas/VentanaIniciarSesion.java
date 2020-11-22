@@ -6,8 +6,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.LinkOption;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -15,13 +17,18 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.security.auth.callback.TextOutputCallback;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.*;
- 
+
+import org.apache.commons.dbutils.DbUtils;
+import org.sqlite.core.DB;
+
 public class VentanaIniciarSesion extends JFrame {
 
 	private JPanel panelUsuario;
@@ -46,7 +53,7 @@ public class VentanaIniciarSesion extends JFrame {
 	private static VentanaMenu menu;
 
 
-	public VentanaIniciarSesion() {
+	public VentanaIniciarSesion(Logger logger) {
 		setTitle("Inicio");
 		setSize(310,260);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -114,17 +121,40 @@ public class VentanaIniciarSesion extends JFrame {
 
 						@Override
 						public void actionPerformed(ActionEvent e) {
-							papel = new Papel();
-							menu = new VentanaMenu(papel.getCompPapel(), papel, usuarioEscogido);
+							papel = new Papel(logger);
+							menu = new VentanaMenu(papel.getCompPapel(), papel, usuarioEscogido, logger);
 							dispose();
 
 						}
 					});
+
+					JButton botonEliminar = new JButton("Eliminar Usuario");
+					botonEliminar.addActionListener(new ActionListener() {
+
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							int selectedOption = JOptionPane.showConfirmDialog(null,  "¿Seguro que quieres borrar el usuario: " + usuarioEscogido + "?", "Elige:", JOptionPane.YES_NO_OPTION);
+							if(selectedOption == 0) {
+								eliminarUsuario();
+								dispose();
+								JOptionPane.showMessageDialog(null, "Se ha eliminado el usuario " + usuarioEscogido + ".");
+								logger.log(Level.INFO, "Se ha borrado el usuario " + usuarioEscogido + " de la base de datos.");
+								new VentanaIniciarSesion(logger);
+							} 
+
+						}
+					});
+					panelDatos.add(botonEliminar);
+
+
 					repaint();
 					validate();					
+					logger.log(Level.INFO, "Se ha iniciado sesion con " + usuarioEscogido + ".");
 
 				} else {
 					JOptionPane.showMessageDialog(null, "Usuario y/o contraseña incorrectas");
+					logger.log(Level.INFO, "Se ha intentado iniciar sesion, pero los datos han sido erroneos.");
+
 				}
 			}
 		});
@@ -135,12 +165,12 @@ public class VentanaIniciarSesion extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 
 				crearUsuario();
-
+				logger.log(Level.INFO, "Se ha creado un nuevo usuario.");
 
 			}
 		});
 
-		
+
 		usuario.getDocument().addDocumentListener(new DocumentListener() {
 			public void changedUpdate(DocumentEvent e) {
 				changed();
@@ -152,7 +182,7 @@ public class VentanaIniciarSesion extends JFrame {
 				changed();
 			}
 		});
-		
+
 		contraseña.getDocument().addDocumentListener(new DocumentListener() {
 			public void changedUpdate(DocumentEvent e) {
 				changed();
@@ -164,11 +194,11 @@ public class VentanaIniciarSesion extends JFrame {
 				changed();
 			}
 		});		
-		
+
 
 		setVisible(true);		
 	}
-	
+
 
 	public void changed() {
 		if (contraseña.getText().equals("") || contraseña.getText().contains(" ") || usuario.getText().equals("") || usuario.getText().contains(" ")){
@@ -183,12 +213,14 @@ public class VentanaIniciarSesion extends JFrame {
 
 	public boolean comprobar() {
 		try {
+			
 			Class.forName("org.sqlite.JDBC");
 
 			Connection conn = DriverManager.getConnection("jdbc:sqlite:usuarios.db");
 			Statement stmt = (Statement) conn.createStatement();
 			ResultSet rs = stmt.executeQuery("Select * from usuarios");
 
+			
 			while(rs.next()) {
 				String usuarioBD = rs.getString("usuario");
 				String contraseñaBD = rs.getString("contraseña");
@@ -196,11 +228,16 @@ public class VentanaIniciarSesion extends JFrame {
 				System.out.println(contraseñaBD);
 				if (usuarioBD.equals(usuario.getText()) && contraseñaBD.equals(contraseña.getText())) {
 					usuarioEscogido = usuarioBD;
+					
+					DbUtils.closeQuietly(rs);
+					DbUtils.closeQuietly(stmt);
+					DbUtils.closeQuietly(conn);
+					
 					return true;
 				}
 
 			}
-
+			
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {
@@ -218,13 +255,13 @@ public class VentanaIniciarSesion extends JFrame {
 			Connection conn = DriverManager.getConnection("jdbc:sqlite:usuarios.db");
 			Statement stmt = (Statement) conn.createStatement();
 
-			ResultSet rs1 = stmt.executeQuery("Select * from usuarios");
+			ResultSet rs = stmt.executeQuery("Select * from usuarios");
 
 			ArrayList<String> usuariosBD = new ArrayList<>();
 
-			while(rs1.next()) {
-				String usuarioBD = rs1.getString("usuario");
-				String contraseñaBD = rs1.getString("contraseña");
+			while(rs.next()) {
+				String usuarioBD = rs.getString("usuario");
+				String contraseñaBD = rs.getString("contraseña");
 				usuariosBD.add(usuarioBD);
 			}
 
@@ -237,6 +274,8 @@ public class VentanaIniciarSesion extends JFrame {
 			} else {
 				JOptionPane.showMessageDialog(null, "Este usuario ya existe");
 			}
+			
+			
 
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
@@ -246,7 +285,38 @@ public class VentanaIniciarSesion extends JFrame {
 
 	} 
 
-	//
+
+	public void eliminarUsuario() {
+		try {
+			
+			Class.forName("org.sqlite.JDBC");
+
+			Connection conn = DriverManager.getConnection("jdbc:sqlite:usuarios.db");
+			Statement stmt = (Statement) conn.createStatement();
+			
+
+			String instruccion = "Delete from usuarios where usuario='" + usuarioEscogido + "';" ;
+			int rs = stmt.executeUpdate(instruccion);
+
+			File file = new File("clientes/" + usuarioEscogido + "/");
+
+			deleteDirectory(file);
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public boolean deleteDirectory(File directoryToBeDeleted) {	//METODO RECURSIVO
+	    File[] allContents = directoryToBeDeleted.listFiles();
+	    if (allContents != null) {
+	        for (File file : allContents) {
+	            deleteDirectory(file);
+	        }
+	    }
+	    return directoryToBeDeleted.delete();
+	}
 
 
 
