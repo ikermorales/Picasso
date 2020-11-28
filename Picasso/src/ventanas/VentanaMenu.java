@@ -11,7 +11,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
@@ -65,10 +71,10 @@ public class VentanaMenu extends JFrame {
 	private Thread hiloCheck;
 
 	private JMenu menuArchivo;
-	
+
 	private JMenuItem guardarArchivo;
 	private VentanaGuardar ventanaGuardar;
-	
+
 	private JMenuItem cargarArchivo;
 	private VentanaCargar ventanaCargar;
 
@@ -81,15 +87,15 @@ public class VentanaMenu extends JFrame {
 	private static Musica m = new Musica();
 
 	private JMenu menuGaleria;
-	
+
 	private JPanel transparenciaPanel;
 	private JSlider barratransparencia;
-	
+
 	private JPanel simetriaPanel;
 	private JCheckBox simetria;
 	private JButton botonSimetria;
 	private int tipoSimetria = 0;
-	
+
 	private Border emptyBorder = BorderFactory.createEmptyBorder();
 
 
@@ -191,8 +197,8 @@ public class VentanaMenu extends JFrame {
 			}
 		});
 		add(botonTexto);
-		
-		
+
+
 		panelPinceles = new JPanel();
 		panelPinceles.setBackground(Color.WHITE);
 		panelPinceles.setLayout(new GridBagLayout());
@@ -224,7 +230,7 @@ public class VentanaMenu extends JFrame {
 		panelPinceles.setBorder(new LineBorder(Color.LIGHT_GRAY));
 		panelPinceles.add(pincelPng);
 		add(panelPinceles);
-		
+
 
 		sliderTamanyo = new JSlider(); 
 		sliderTamanyo.setBackground(Color.WHITE);
@@ -246,7 +252,7 @@ public class VentanaMenu extends JFrame {
 				TitledBorder tituloTamanyo = new TitledBorder("Tamaño: " + sliderTamanyo.getValue());
 				tituloTamanyo.setTitleColor(new Color(111, 195, 179));
 				sliderTamanyo.setBorder(tituloTamanyo);
-				
+
 
 			}
 		});
@@ -274,7 +280,7 @@ public class VentanaMenu extends JFrame {
 		cargarArchivo = new JMenuItem("Cargar", new ImageIcon("iconos/load.png"));
 		cargarArchivo.setBackground(Color.WHITE);
 		cargarArchivo.setForeground(new Color(111, 195, 179));
-		
+
 		guardarArchivo.addActionListener(new ActionListener() {
 
 			@Override
@@ -283,7 +289,7 @@ public class VentanaMenu extends JFrame {
 				logger.info( "Se ha abierto la ventana para guardar archivos.");
 			}
 		});
-		
+
 		cargarArchivo.addActionListener(new ActionListener() {
 
 			@Override
@@ -293,13 +299,13 @@ public class VentanaMenu extends JFrame {
 
 			}
 		});
-		
+
 		menuArchivo.add(guardarArchivo);
 		menuArchivo.add(cargarArchivo);
 		barra.add(menuArchivo);
-		
-		
-		
+
+
+
 		barratransparencia = new JSlider(0, 255); 
 		barratransparencia.setBackground(Color.WHITE);
 		barratransparencia.setPreferredSize(new Dimension(140,40));
@@ -311,13 +317,13 @@ public class VentanaMenu extends JFrame {
 		tituloTransparencia.setTitleColor(new Color(111, 195, 179));
 		barratransparencia.setBorder(tituloTransparencia); 
 		barratransparencia.addChangeListener(new ChangeListener() {
-			
+
 			@Override
 			public void stateChanged(ChangeEvent arg0) {
 				TitledBorder tituloTransparencia = new TitledBorder("Opacidad: " + barratransparencia.getValue());
 				tituloTransparencia.setTitleColor(new Color(111, 195, 179));
 				barratransparencia.setBorder(tituloTransparencia); 
-			
+
 				cp.setOpacidad(barratransparencia.getValue());
 			}
 		});
@@ -331,17 +337,17 @@ public class VentanaMenu extends JFrame {
 		transparenciaPanel.getMinimumSize();
 		transparenciaPanel.setBorder(new LineBorder(Color.LIGHT_GRAY));
 		add(transparenciaPanel);
-		
-		
+
+
 		menuMusica = new JMenu("Fonoteca");
 		menuMusica.setIcon(new ImageIcon("iconos/disco.png"));
 		barra.add(menuMusica);
-	
+
 		stop = new JMenuItem("Stop", new ImageIcon("iconos/mute.png"));
 		stop.setBackground(Color.WHITE);
 		stop.setForeground(new Color(111, 195, 179));
 		stop.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				m.setActivado(false);
@@ -350,7 +356,7 @@ public class VentanaMenu extends JFrame {
 			}
 		});
 		menuMusica.add(stop);
-		
+
 		ArrayList<String> canciones = new ArrayList<>();
 		canciones.add("Railroad");
 		canciones.add("Devil");
@@ -360,13 +366,13 @@ public class VentanaMenu extends JFrame {
 		canciones.add("Fanatic");
 		canciones.add("Diamond");
 		canciones.add("Perdition");
-		
+
 		for (String cancion : canciones) {
 			JMenuItem cancionItem = new JMenuItem(cancion, new ImageIcon("iconos/" + cancion + ".png"));
 			cancionItem.setBackground(Color.WHITE);
 			cancionItem.setForeground(new Color(111, 195, 179));
 			cancionItem.addActionListener(new ActionListener() {
-				
+
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					m.setActivado(true);
@@ -376,9 +382,9 @@ public class VentanaMenu extends JFrame {
 			});
 			menuMusica.add(cancionItem);
 		}
-		
-		
-		
+
+
+
 
 		simetria = new JCheckBox("Simetría");
 		simetria.setForeground(new Color(111, 195, 179));
@@ -386,7 +392,7 @@ public class VentanaMenu extends JFrame {
 		botonSimetria = new JButton(new ImageIcon("iconos/simetria.png"));
 		botonSimetria.setBackground(new Color(111, 195, 179));
 		botonSimetria.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				tipoSimetria++;
@@ -400,7 +406,7 @@ public class VentanaMenu extends JFrame {
 				}
 			}
 		});
-		
+
 		simetria.setSelected(false);
 		simetria.addItemListener(new ItemListener() {
 			@Override
@@ -426,10 +432,43 @@ public class VentanaMenu extends JFrame {
 		simetriaPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0)); //TOC
 		simetriaPanel.getMinimumSize();
 		add(simetriaPanel);
-		
-		
-		
-		
+
+
+		menuGaleria = new JMenu("Galería");		
+		menuGaleria.setIcon(new ImageIcon("iconos/galeria.png"));
+		barra.addMouseListener(new MouseAdapter() {
+
+			public void mouseEntered(MouseEvent e) {
+				menuGaleria.removeAll();
+				File carpetaDibujos = new File("clientes/" + usuario + "/galeria/");
+				File[] dibujos = carpetaDibujos.listFiles();
+				for (File archivo : dibujos) {
+					if(archivo.getName().contains(".bin")) {
+						String nombre = archivo.getName();
+						nombre = nombre.substring(0, nombre.length() - 4); //Le quitamos el .bin para que quede mas bonito
+						JMenuItem dibujo = new JMenuItem(nombre, new ImageIcon("iconos/dibujo.png"));
+						dibujo.setBackground(Color.WHITE);              
+						dibujo.setForeground(new Color(111, 195, 179)); 
+						dibujo.addActionListener(new ActionListener() {
+	
+							@Override
+							public void actionPerformed(ActionEvent e) {
+							cp.cargarDibujoAutomatico(usuario, archivo.getName());
+								
+							}
+						});
+						menuGaleria.add(dibujo);
+						
+					}
+				}
+
+			}
+
+
+		});
+		barra.add(menuGaleria);
+
+
 
 		setVisible(true);
 		logger.info("Menu inicializado correctamente.");
