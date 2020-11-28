@@ -23,6 +23,8 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
+import org.apache.commons.io.FileUtils;
+
 import clasesBase.ComponentePapel;
 import clasesBase.Sprite;
 
@@ -60,8 +62,6 @@ public class VentanaCargar extends JFrame implements Serializable {
 
 
 	public void cargarDibujo(String usuarioEscogido,  HashMap<Integer, ArrayList<ArrayList<Sprite>>> hashDibujos, ComponentePapel cp) {
-
-
 		try {
 			HashMap<Integer, ArrayList<ArrayList<Sprite>>> hashDibujosNuevos;
 			ObjectInputStream ois = new ObjectInputStream(new FileInputStream("clientes/" + usuarioEscogido + "/galeria/" + cajaNombre.getText() + ".bin"));
@@ -81,7 +81,7 @@ public class VentanaCargar extends JFrame implements Serializable {
 			}
 	        
 	        for (File file : dondeEstaban.listFiles()) {
-				file.renameTo(new File("proceso/" + file.getName()));
+				FileUtils.copyFileToDirectory(file, new File("proceso/"));
 			}
 			
 		} catch (IOException e) {
