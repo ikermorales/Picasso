@@ -31,7 +31,6 @@ public class Picasso {
 
 
 
-
 		ventanaInicial = new VentanaIniciarSesion(LOGGER);
 
 
