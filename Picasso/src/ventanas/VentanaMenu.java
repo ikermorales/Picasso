@@ -224,6 +224,11 @@ public class VentanaMenu extends JFrame {
 				cp.setSelectorSprite(pincelesCombo.getSelectedIndex());
 				pincelPng.setIcon(new ImageIcon("iconos/" + pincelesCombo.getSelectedItem() + ".png"));
 				logger.info( "Se ha cambiado de pincel.");
+				if(pincelesCombo.getSelectedIndex() == 0) {
+					sliderTamanyo.disable();
+				} else {
+					sliderTamanyo.enable();
+				}
 			}
 		});
 		panelPinceles.add(pincelesCombo);
@@ -244,6 +249,7 @@ public class VentanaMenu extends JFrame {
 		sliderTamanyo.setPaintTicks(false);
 		sliderTamanyo.setMajorTickSpacing(20);
 		sliderTamanyo.setMajorTickSpacing(5);
+		sliderTamanyo.setEnabled(false);
 		sliderTamanyo.addChangeListener(new ChangeListener() {
 
 			@Override
@@ -252,7 +258,6 @@ public class VentanaMenu extends JFrame {
 				TitledBorder tituloTamanyo = new TitledBorder("Tamaño: " + sliderTamanyo.getValue());
 				tituloTamanyo.setTitleColor(new Color(111, 195, 179));
 				sliderTamanyo.setBorder(tituloTamanyo);
-
 
 			}
 		});

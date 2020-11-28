@@ -1,8 +1,18 @@
-nov 28, 2020 1:14:39 PM Picasso main
+nov 28, 2020 1:23:54 PM Picasso main
 INFORMACIÓN: Programa Inicializado
-nov 28, 2020 1:14:43 PM ventanas.VentanaIniciarSesion$1 actionPerformed
-INFORMACIÓN: Se ha iniciado sesion con 1234.
-nov 28, 2020 1:14:43 PM ventanas.Papel <init>
+nov 28, 2020 1:23:58 PM ventanas.VentanaIniciarSesion$1 actionPerformed
+INFORMACIÓN: Se ha iniciado sesion con iker.
+nov 28, 2020 1:23:59 PM ventanas.Papel <init>
 INFORMACIÓN: Papel creado correctamente.
-nov 28, 2020 1:14:44 PM ventanas.VentanaMenu <init>
+nov 28, 2020 1:24:00 PM ventanas.VentanaMenu <init>
 INFORMACIÓN: Menu inicializado correctamente.
+nov 28, 2020 1:24:03 PM ventanas.VentanaMenu$6 actionPerformed
+INFORMACIÓN: Se ha cambiado de pincel.
+nov 28, 2020 1:24:06 PM ventanas.VentanaMenu$6 actionPerformed
+INFORMACIÓN: Se ha cambiado de pincel.
+nov 28, 2020 1:24:11 PM ventanas.VentanaMenu$6 actionPerformed
+INFORMACIÓN: Se ha cambiado de pincel.
+nov 28, 2020 1:24:15 PM ventanas.VentanaMenu$13 actionPerformed
+INFORMACIÓN: Se ha cambiado el tipo de simetría.
+nov 28, 2020 1:24:18 PM ventanas.VentanaMenu$6 actionPerformed
+INFORMACIÓN: Se ha cambiado de pincel.
