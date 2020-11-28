@@ -17,6 +17,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -35,6 +36,8 @@ import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.text.JTextComponent.KeyBinding;
+
+import org.apache.commons.io.FileUtils;
 
 import ventanas.Papel;
 import ventanas.VentanaEdicion;
@@ -85,13 +88,13 @@ public class ComponentePapel extends JComponent {
 
 	private VentanaEdicion ventanaEdicion;
 	private VentanaEdicionTexto ventanaEdicionTexto;
-	
+
 	private static HashMap<Integer, ArrayList<ArrayList<Sprite>>> hashDibujos;
-	
+
 	private boolean simetriaActivada;
 	private boolean simetriaHorizontal;
-	
-	
+
+
 	public ComponentePapel(Papel p, Logger logger) {
 
 		setDoubleBuffered(false);
@@ -119,7 +122,7 @@ public class ComponentePapel extends JComponent {
 
 			public void mouseClicked(MouseEvent e) {
 				if(e.getButton() == 3) {
-					
+
 					for(Iterator<ArrayList<Sprite>> spritesIterador = dibujosGrandes.iterator(); spritesIterador.hasNext();) {
 						ArrayList<Sprite> spritesTodos = spritesIterador.next();
 
@@ -160,9 +163,9 @@ public class ComponentePapel extends JComponent {
 			public void mouseDragged(MouseEvent e) {
 
 				if(SwingUtilities.isLeftMouseButton(e)) {
-					
+
 					procesosAnteriores = carpetaProcesoAnterior.listFiles();
-					
+
 					for (File file : procesosAnteriores) {
 						if(contadorImagen < Integer.parseInt(file.getName().substring(0,1))) {
 							file.delete();			
@@ -187,9 +190,9 @@ public class ComponentePapel extends JComponent {
 
 					Color colorActual = getGraficos().getColor();
 					getGraficos().setColor(new Color(colorActual.getRed(), colorActual.getGreen(), colorActual.getBlue(), opacidad));
-					
+
 					pixelado = new Sprite(xActual, yActual, xVieja, yVieja, graficos.getColor(), opacidad, tamanyo, pinceles, selectorSprite, tamanyo, simetriaActivada, simetriaHorizontal);
-					
+
 					if(simetriaActivada && simetriaHorizontal) {
 						Sprite pixeladoSimetrico = new Sprite(ComponentePapel.this.getWidth() - xActual, ComponentePapel.this.getHeight() - yActual, ComponentePapel.this.getWidth() - xVieja, ComponentePapel.this.getHeight() - yVieja, graficos.getColor(), opacidad, tamanyo, pinceles, selectorSprite, tamanyo, simetriaActivada, simetriaHorizontal);
 						dibujos.add(pixeladoSimetrico);
@@ -197,7 +200,7 @@ public class ComponentePapel extends JComponent {
 						Sprite pixeladoSimetrico = new Sprite(ComponentePapel.this.getWidth() - xActual, yActual, ComponentePapel.this.getWidth() - xVieja, yVieja, graficos.getColor(), opacidad, tamanyo, pinceles, selectorSprite, tamanyo, simetriaActivada, simetriaHorizontal);
 						dibujos.add(pixeladoSimetrico);
 					}
-					
+
 					dibujos.add(pixelado);
 
 
@@ -256,7 +259,7 @@ public class ComponentePapel extends JComponent {
 					hashDibujos.replace(contadorImagen, dibujosGrandes);
 					forRepaint();
 					generarEstado(p);
-					
+
 					deshaciendo = true;
 				} else if ((e.getKeyCode() == KeyEvent.VK_Y) && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0)
 						&& deshaciendo && hashDibujos.containsKey(contadorImagen)) {
@@ -270,7 +273,7 @@ public class ComponentePapel extends JComponent {
 					}
 					forRepaint();
 					generarEstado(p);
-					
+
 				}  
 			} 
 
@@ -285,8 +288,8 @@ public class ComponentePapel extends JComponent {
 
 		//INIT
 		for (File file : procesosAnteriores) {
-				file.delete();
-			
+			file.delete();
+
 		}
 
 
@@ -346,18 +349,18 @@ public class ComponentePapel extends JComponent {
 
 		try {
 			File file = new File("proceso/" + contadorImagen + ".jpg");
-	
+
 			ArrayList<ArrayList<Sprite>> copiaDibujos = new ArrayList<>();
 			copiaDibujos = (ArrayList<ArrayList<Sprite>>) dibujosGrandes.clone();
 			dibujos = new ArrayList<>();
 			dibujosGrandes.add(dibujos);
-			
+
 			if(hashDibujos.containsKey(contadorImagen)) {
 				hashDibujos.replace(contadorImagen, copiaDibujos);
 			} else {
 				hashDibujos.put(contadorImagen, copiaDibujos);
 			}
-			
+
 			OutputStream out = new FileOutputStream(file);
 			ImageIO.write(imagen, "jpg", file);	
 			contadorImagen++;
@@ -418,10 +421,43 @@ public class ComponentePapel extends JComponent {
 	}
 
 
+	public void cargarDibujoAutomatico(String usuarioEscogido, String dibujoEscogido) {	
+		try {
+			HashMap<Integer, ArrayList<ArrayList<Sprite>>> hashDibujosNuevos;
+			ObjectInputStream ois = new ObjectInputStream(new FileInputStream("clientes/" + usuarioEscogido + "/galeria/" + dibujoEscogido));
+			hashDibujosNuevos = (HashMap<Integer, ArrayList<ArrayList<Sprite>>>) ois.readObject();
+			setHashDibujos(hashDibujosNuevos);                                               
+			setDibujosGrandes(hashDibujosNuevos.get(Collections.max(hashDibujosNuevos.keySet())));
+			setContadorImagen(Collections.max(hashDibujosNuevos.keySet()));                  
+			forRepaint();
+			ois.close();
+
+			String carpetaDibujoEscogido = dibujoEscogido.substring(0, dibujoEscogido.length() - 4);
+			File dondeEstaban = new File("clientes/" + usuarioEscogido + "/galeria/" + carpetaDibujoEscogido + "/");
 	
-	
-	
-	
+			for (File file : getCarpetaProcesoAnterior().listFiles()) {
+				if(!file.getName().equals("0.jpg")) {
+					file.delete();
+				}
+			}
+
+			for (File file : dondeEstaban.listFiles()) {
+				FileUtils.copyFileToDirectory(file, getCarpetaProcesoAnterior());
+			}
+
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
+
+
+
+
+
+
 	public static Graphics2D getGraficos() {
 		return graficos;
 	}
@@ -542,14 +578,14 @@ public class ComponentePapel extends JComponent {
 	public File getCarpetaProcesoAnterior() {
 		return carpetaProcesoAnterior;
 	}
-	
+
 
 
 	public File[] getProcesosAnteriores() {
 		return procesosAnteriores;
 	}
 
-	
+
 
 	public Thread getHiloArcoiris() {
 		return hiloArcoiris;
@@ -567,8 +603,8 @@ public class ComponentePapel extends JComponent {
 	public void setRainbowActivado(boolean rainbowActivado) {
 		this.rainbowActivado = rainbowActivado;
 	}
-	
-	
+
+
 
 	public ArrayList<String> getPinceles() {
 		return pinceles;
@@ -666,8 +702,8 @@ public class ComponentePapel extends JComponent {
 	public void setOpacidad(int opacidad) {
 		this.opacidad = opacidad;
 	}
-	
-	
+
+
 
 
 
