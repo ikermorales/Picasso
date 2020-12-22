@@ -1,2 +1,8 @@
-dic 10, 2020 9:41:39 PM Picasso main
+dic 22, 2020 8:59:08 PM Picasso main
 INFORMACIÓN: Programa Inicializado
+dic 22, 2020 8:59:14 PM ventanas.VentanaIniciarSesion$1 actionPerformed
+INFORMACIÓN: Se ha iniciado sesion con 1234.
+dic 22, 2020 8:59:14 PM ventanas.Papel <init>
+INFORMACIÓN: Papel creado correctamente.
+dic 22, 2020 8:59:14 PM ventanas.VentanaMenu <init>
+INFORMACIÓN: Menu inicializado correctamente.
