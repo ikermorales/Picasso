@@ -41,6 +41,8 @@ import javax.swing.event.ChangeListener;
 
 import clasesBase.ComponentePapel;
 import clasesBase.Musica;
+import formaStuff.Forma;
+import formaStuff.VentanaCrearFormas;
 
 
 public class VentanaMenu extends JFrame {
@@ -97,13 +99,20 @@ public class VentanaMenu extends JFrame {
 	private int tipoSimetria = 0;
 
 	private Border emptyBorder = BorderFactory.createEmptyBorder();
+	
+	private ArrayList<Forma> formas = new ArrayList<>();
+	private JButton botonFormas;
+	
+	private VentanaCrearFormas vCF;
+	private JButton botonCrearFormas;
 
 
 	public VentanaMenu(ComponentePapel cp, Papel p, String usuario, Logger logger) {
 		setTitle("Menu");
-		setSize(new Dimension(310, 650));
+		setSize(new Dimension(310, 680));
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setLayout(new GridLayout(10,1)); 
+		setResizable(false);
 
 
 
@@ -472,7 +481,22 @@ public class VentanaMenu extends JFrame {
 
 		});
 		barra.add(menuGaleria);
-
+		
+		
+		botonCrearFormas = new JButton("Taller de Formas", new ImageIcon("iconos/taller.png"));
+		botonCrearFormas.setBackground(Color.WHITE);  
+		botonCrearFormas.setBorder(emptyBorder);
+		botonCrearFormas.setBorder(new LineBorder(Color.LIGHT_GRAY));
+		botonCrearFormas.setForeground(new Color(111, 195, 179));
+		botonCrearFormas.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				vCF = new VentanaCrearFormas(cp, logger, formas, cp.getHashFormasTecleadas());
+				
+			}
+		});
+		add(botonCrearFormas);
 
 
 		setVisible(true);
