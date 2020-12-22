@@ -35,9 +35,9 @@ public class VentanaIniciarSesion extends JFrame {
 	private JTextField usuario;
 	private JLabel labelUsuario = new JLabel("        Usuario: ");
 
-	private JPanel panelContrasenya;
-	private JPasswordField contrasenya;
-	private JLabel labelContrasenya = new JLabel("  contrasenya: ");
+	private JPanel panelcontraseña;
+	private JPasswordField contraseña;
+	private JLabel labelcontraseña = new JLabel("  Contraseña: ");
 
 	private JButton aceptar;
 	private JButton crearUsuario;
@@ -88,13 +88,13 @@ public class VentanaIniciarSesion extends JFrame {
 		panelUsuario.setBackground(new Color(111, 195, 179));
 		panelDatos.add(panelUsuario);
 
-		panelContrasenya = new JPanel();
-		contrasenya = new JPasswordField();
-		contrasenya.setPreferredSize(new Dimension(100,25));
-		panelContrasenya.add(labelContrasenya);
-		panelContrasenya.add(contrasenya);
-		panelContrasenya.setBackground(new Color(111, 195, 179));
-		panelDatos.add(panelContrasenya);
+		panelcontraseña = new JPanel();
+		contraseña = new JPasswordField();
+		contraseña.setPreferredSize(new Dimension(100,25));
+		panelcontraseña.add(labelcontraseña);
+		panelcontraseña.add(contraseña);
+		panelcontraseña.setBackground(new Color(111, 195, 179));
+		panelDatos.add(panelcontraseña);
 
 		panelBotonera = new JPanel();
 		aceptar = new JButton("Iniciar Sesión");
@@ -152,7 +152,7 @@ public class VentanaIniciarSesion extends JFrame {
 					logger.log(Level.INFO, "Se ha iniciado sesion con " + usuarioEscogido + ".");
 
 				} else {
-					JOptionPane.showMessageDialog(null, "Usuario y/o contrasenya incorrectas");
+					JOptionPane.showMessageDialog(null, "Usuario y/o contraseña incorrectas");
 					logger.log(Level.INFO, "Se ha intentado iniciar sesion, pero los datos han sido erroneos.");
 
 				}
@@ -183,7 +183,7 @@ public class VentanaIniciarSesion extends JFrame {
 			}
 		});
 
-		contrasenya.getDocument().addDocumentListener(new DocumentListener() {
+		contraseña.getDocument().addDocumentListener(new DocumentListener() {
 			public void changedUpdate(DocumentEvent e) {
 				changed();
 			}
@@ -201,7 +201,7 @@ public class VentanaIniciarSesion extends JFrame {
 
 
 	public void changed() {
-		if (contrasenya.getText().equals("") || contrasenya.getText().contains(" ") || usuario.getText().equals("") || usuario.getText().contains(" ")){
+		if (contraseña.getText().equals("") || contraseña.getText().contains(" ") || usuario.getText().equals("") || usuario.getText().contains(" ")){
 			aceptar.setEnabled(false);
 			crearUsuario.setEnabled(false);
 		}
@@ -223,10 +223,10 @@ public class VentanaIniciarSesion extends JFrame {
 			
 			while(rs.next()) {
 				String usuarioBD = rs.getString("usuario");
-				String contrasenyaBD = rs.getString("contrasenya");
+				String contraseñaBD = rs.getString("contraseña");
 				System.out.println(usuarioBD);
-				System.out.println(contrasenyaBD);
-				if (usuarioBD.equals(usuario.getText()) && contrasenyaBD.equals(contrasenya.getText())) {
+				System.out.println(contraseñaBD);
+				if (usuarioBD.equals(usuario.getText()) && contraseñaBD.equals(contraseña.getText())) {
 					usuarioEscogido = usuarioBD;
 					
 					DbUtils.closeQuietly(rs);
@@ -261,12 +261,12 @@ public class VentanaIniciarSesion extends JFrame {
 
 			while(rs.next()) {
 				String usuarioBD = rs.getString("usuario");
-				String contrasenyaBD = rs.getString("contrasenya");
+				String contraseñaBD = rs.getString("contraseña");
 				usuariosBD.add(usuarioBD);
 			}
 
 			if (!usuariosBD.contains(usuario.getText())) {
-				String instruccion = "INSERT INTO usuarios (usuario, contrasenya) VALUES ('" + usuario.getText()  + "','" + contrasenya.getText() + "');";
+				String instruccion = "INSERT INTO usuarios (usuario, contraseña) VALUES ('" + usuario.getText()  + "','" + contraseña.getText() + "');";
 				File directorioPersonal = new File("clientes\\" + usuario.getText() + "\\galeria\\");
 				directorioPersonal.mkdirs();
 				JOptionPane.showMessageDialog(null, "Usuario creado con éxito");
