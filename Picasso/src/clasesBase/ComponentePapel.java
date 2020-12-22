@@ -39,8 +39,11 @@ import javax.swing.text.JTextComponent.KeyBinding;
 
 import org.apache.commons.io.FileUtils;
 
+import formaStuff.Circulo;
+import formaStuff.Forma;
 import ventanas.Papel;
 import ventanas.VentanaEdicion;
+import ventanas.VentanaEdicionFormas;
 import ventanas.VentanaEdicionTexto;
 
 public class ComponentePapel extends JComponent {
@@ -88,11 +91,16 @@ public class ComponentePapel extends JComponent {
 
 	private VentanaEdicion ventanaEdicion;
 	private VentanaEdicionTexto ventanaEdicionTexto;
-
+	private VentanaEdicionFormas ventanaEdicionFormas;
+	
 	private static HashMap<Integer, ArrayList<ArrayList<Sprite>>> hashDibujos;
 
 	private boolean simetriaActivada;
 	private boolean simetriaHorizontal;
+
+	private HashMap<Integer, Forma> hashFormasTecleadas = new HashMap<>();
+	
+	private ArrayList<Sprite> formasUsadas = new ArrayList<>();
 
 
 	public ComponentePapel(Papel p, Logger logger) {
@@ -139,6 +147,11 @@ public class ComponentePapel extends JComponent {
 								break;
 							} else if(distance < sprite.getCollisionRad() && sprite.getClass().getName().contains("Sprite")) {
 								ventanaEdicion = new VentanaEdicion(ComponentePapel.this, spritesTodos, p, logger);
+								forRepaint();
+								break;
+							} else if(distance < sprite.getCollisionRad() && (sprite.getClass().getName().contains("Cuadrado") || sprite.getClass().getName().contains("Circulo") || sprite.getClass().getName().contains("Triangulo") || sprite.getClass().getName().contains("Ovalo"))) {
+								ventanaEdicionFormas = new VentanaEdicionFormas((Forma) sprite, ComponentePapel.this, p);
+								add(ventanaEdicionFormas);
 								forRepaint();
 								break;
 							}
@@ -274,7 +287,30 @@ public class ComponentePapel extends JComponent {
 					forRepaint();
 					generarEstado(p);
 
-				}  
+				}  else {
+					for (Integer i : hashFormasTecleadas.keySet()) {
+						if(i == e.getKeyCode()) {
+							Sprite forma = new Sprite();
+							forma = hashFormasTecleadas.get(i);
+							
+							if(formasUsadas.contains(forma)) {
+								forma.setX(xConstante);
+								forma.setY(yConstante);
+								generarEstado(p);
+								forRepaint();
+							} else {
+								forma.setX(xConstante);
+								forma.setY(yConstante);
+								dibujos.add(forma);
+								formasUsadas.add(forma);
+								generarEstado(p);
+								forRepaint();
+							}
+							
+
+						}
+					}
+				}
 			} 
 
 
@@ -331,10 +367,18 @@ public class ComponentePapel extends JComponent {
 					Texto text = (Texto) sprite;
 					text.pintarString(this);
 					repaint();
+					
+				} else if(sprite.getClass().getName().contains("Circulo")   || 
+						  sprite.getClass().getName().contains("Triangulo") ||
+						  sprite.getClass().getName().contains("Cuadrado")  ||
+						  sprite.getClass().getName().contains("Ovalo"))    {
+					Forma f = (Forma) sprite;
+					f.pintarForma(this, f, f.getX(), f.getY());
+					repaint();
 				} else if(sprite.getClass().getName().contains("Sprite")) {
 					sprite.pintar(this);
 					repaint();
-				}
+				} 
 			}
 		}
 		graficos.setColor(colorActual);
@@ -434,7 +478,7 @@ public class ComponentePapel extends JComponent {
 
 			String carpetaDibujoEscogido = dibujoEscogido.substring(0, dibujoEscogido.length() - 4);
 			File dondeEstaban = new File("clientes/" + usuarioEscogido + "/galeria/" + carpetaDibujoEscogido + "/");
-	
+
 			for (File file : getCarpetaProcesoAnterior().listFiles()) {
 				if(!file.getName().equals("0.jpg")) {
 					file.delete();
@@ -704,6 +748,11 @@ public class ComponentePapel extends JComponent {
 	}
 
 
+
+
+	public HashMap<Integer, Forma> getHashFormasTecleadas() {
+		return hashFormasTecleadas;
+	}
 
 
 
