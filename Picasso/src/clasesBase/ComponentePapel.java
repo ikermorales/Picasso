@@ -195,7 +195,9 @@ public class ComponentePapel extends JComponent {
 					} catch (Exception e2) {
 						//No hacer nada, por que lo hace bien aun así
 					}
-
+					
+					xConstante = e.getX();
+					yConstante = e.getY();
 					xActual = e.getX();
 					yActual = e.getY();
 
@@ -753,6 +755,36 @@ public class ComponentePapel extends JComponent {
 	public HashMap<Integer, Forma> getHashFormasTecleadas() {
 		return hashFormasTecleadas;
 	}
+
+
+
+
+	public int getxConstante() {
+		return xConstante;
+	}
+
+
+
+
+	public void setxConstante(int xConstante) {
+		this.xConstante = xConstante;
+	}
+
+
+
+
+	public int getyConstante() {
+		return yConstante;
+	}
+
+
+
+
+	public void setyConstante(int yConstante) {
+		this.yConstante = yConstante;
+	}
+	
+	
 
 
 
