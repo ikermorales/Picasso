@@ -1,8 +1,16 @@
-dic 22, 2020 8:59:08 PM Picasso main
-INFORMACIÓN: Programa Inicializado
-dic 22, 2020 8:59:14 PM ventanas.VentanaIniciarSesion$1 actionPerformed
-INFORMACIÓN: Se ha iniciado sesion con 1234.
-dic 22, 2020 8:59:14 PM ventanas.Papel <init>
-INFORMACIÓN: Papel creado correctamente.
-dic 22, 2020 8:59:14 PM ventanas.VentanaMenu <init>
-INFORMACIÓN: Menu inicializado correctamente.
+ene. 10, 2021 5:20:13 P. M. Picasso main
+INFO: Programa Inicializado
+ene. 10, 2021 5:20:22 P. M. ventanas.VentanaIniciarSesion$1 actionPerformed
+INFO: Se ha intentado iniciar sesion, pero los datos han sido erroneos.
+ene. 10, 2021 5:20:24 P. M. ventanas.VentanaIniciarSesion$2 actionPerformed
+INFO: Se ha creado un nuevo usuario.
+ene. 10, 2021 5:20:25 P. M. ventanas.VentanaIniciarSesion$1 actionPerformed
+INFO: Se ha iniciado sesion con gorka.
+ene. 10, 2021 5:20:26 P. M. ventanas.Papel <init>
+INFO: Papel creado correctamente.
+ene. 10, 2021 5:20:26 P. M. ventanas.VentanaMenu <init>
+INFO: Menu inicializado correctamente.
+ene. 10, 2021 5:20:29 P. M. ventanas.VentanaMenu$3 actionPerformed
+INFO: Pintura Arcoiris activado.
+ene. 10, 2021 5:20:31 P. M. ventanas.VentanaMenu$1 actionPerformed
+INFO: Se ha abierto la paleta de colores.
