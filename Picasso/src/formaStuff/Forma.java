@@ -46,8 +46,6 @@ public class Forma extends Sprite {
 
 	public void setBotonteclado(Integer botonteclado) {
 		this.botonteclado = botonteclado;
-	}
-	
-	
+	}	
 }
 
