@@ -39,15 +39,5 @@ public class Ovalo extends Forma {
 	public void setAltura(double altura) {
 		this.altura = altura;
 	}
-	@Override
-	public String toString() {
-		return "Ovalo [anchura=" + anchura + ", altura=" + altura + ", getColor()=" + getColor()
-				+ ", isEstanRellenas()=" + isEstanRellenas() + ", toString()=" + super.toString() + ", getClass()="
-				+ getClass() + ", hashCode()=" + hashCode() + "]";
-	}
-	
-	
-	
-	
 	
 }
