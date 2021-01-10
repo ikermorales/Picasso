@@ -40,13 +40,6 @@ public class Cuadrado extends Forma {
 	public void setAncho(double ancho) {
 		this.ancho = ancho;
 	}
-	@Override
-	public String toString() {
-		return "Cuadrado [alto=" + alto + ", ancho=" + ancho + ", getColor()=" + getColor() + ", isEstanRellenas()="
-				+ isEstanRellenas() + ", toString()=" + super.toString() + ", getClass()=" + getClass()
-				+ ", hashCode()=" + hashCode() + "]";
-	}
-	
-	
+
 	
 }
