@@ -34,6 +34,7 @@ public class VentanaEdicionFormas extends JInternalFrame{
 	
 	private JPanel panelConfirmar;
 	private JButton confirmar;
+	private JButton cancelar;
 	
 	public VentanaEdicionFormas(Forma f, ComponentePapel cp, Papel p) {
 		setTitle("Edicion de Forma");
@@ -245,6 +246,8 @@ public class VentanaEdicionFormas extends JInternalFrame{
 					((Triangulo) f).setBase((double) spinnerAncho.getValue());
 					((Triangulo) f).setEstanRellenas(rellenado);
 					((Triangulo) f).setColor(recolor.getBackground());
+					p.toFront();
+					p.repaint();					
 					cp.forRepaint();
 					cp.generarEstado(p);
 					dispose();
@@ -253,6 +256,18 @@ public class VentanaEdicionFormas extends JInternalFrame{
 			
 			
 		}
+		
+		cancelar = new JButton("Cancelar");
+		cancelar.setBackground(new Color(111, 195, 179));
+		cancelar.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+				
+			}
+		});
+		panelConfirmar.add(cancelar);
 		
 		setVisible(true);		
 	}
