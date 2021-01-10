@@ -224,8 +224,7 @@ public class VentanaIniciarSesion extends JFrame {
 			while(rs.next()) {
 				String usuarioBD = rs.getString("usuario");
 				String contraseñaBD = rs.getString("contraseña");
-				System.out.println(usuarioBD);
-				System.out.println(contraseñaBD);
+
 				if (usuarioBD.equals(usuario.getText()) && contraseñaBD.equals(contraseña.getText())) {
 					usuarioEscogido = usuarioBD;
 					
@@ -317,10 +316,10 @@ public class VentanaIniciarSesion extends JFrame {
 	    }
 	    return directoryToBeDeleted.delete();
 	}
-
-
-
-
+	
+	
+	
+	
 	public static String getUsuarioEscogido() {
 		return usuarioEscogido;
 	}
