@@ -42,7 +42,6 @@ import javax.swing.event.ChangeListener;
 import clasesBase.ComponentePapel;
 import clasesBase.Musica;
 import formaStuff.Forma;
-import formaStuff.VentanaCrearFormas;
 
 
 public class VentanaMenu extends JFrame {
@@ -105,13 +104,15 @@ public class VentanaMenu extends JFrame {
 	
 	private VentanaCrearFormas vCF;
 	private JButton botonCrearFormas;
+	
+	private JPanel panelInformacion;
 
 
 	public VentanaMenu(ComponentePapel cp, Papel p, String usuario, Logger logger) {
 		setTitle("Menu");
-		setSize(new Dimension(310, 680));
+		setSize(new Dimension(310, 820));
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setLayout(new GridLayout(10,1)); 
+		setLayout(new GridLayout(11,1)); 
 		setResizable(false);
 
 
@@ -216,7 +217,7 @@ public class VentanaMenu extends JFrame {
 		pincelesCombo = new JComboBox<>();
 		pincelesCombo.setBackground(Color.WHITE);
 		pincelesCombo.setForeground(new Color(111, 195, 179));
-		pincelesCombo.addItem("Caligráfico");
+		pincelesCombo.addItem("Caligrafico");
 		pincelesCombo.addItem("Suave");
 		pincelesCombo.addItem("Pixelado");
 
@@ -404,7 +405,8 @@ public class VentanaMenu extends JFrame {
 		simetria.setForeground(new Color(111, 195, 179));
 		simetria.setBackground(Color.WHITE);
 		botonSimetria = new JButton(new ImageIcon("iconos/simetria.png"));
-		botonSimetria.setBackground(new Color(111, 195, 179));
+		//botonSimetria.setBackground(new Color(111, 195, 179));
+		botonSimetria.setBackground(Color.WHITE);
 		botonSimetria.addActionListener(new ActionListener() {
 
 			@Override
@@ -499,6 +501,73 @@ public class VentanaMenu extends JFrame {
 		add(botonCrearFormas);
 
 
+		panelInformacion = new JPanel();
+		TitledBorder titulo = new TitledBorder("Información: ");
+		panelInformacion.setBorder(titulo);
+		panelInformacion.setLayout(new GridLayout(1,2));
+		
+		JPanel panelVacio = new JPanel();
+		
+		JLabel xLabel = new JLabel("X: ");
+		JLabel yLabel = new JLabel("Y: ");
+		JPanel panelPosicion = new JPanel();
+		panelPosicion.setLayout(new GridLayout(2,1));
+		panelPosicion.add(xLabel);
+		panelPosicion.add(yLabel);
+		
+		JPanel panelColorInfo = new JPanel();
+		JButton botonColorInfo = new JButton();
+		panelColorInfo.setLayout(new GridBagLayout());
+		panelColorInfo.add(botonColorInfo);
+		
+		JPanel panelPincel = new JPanel();
+		JLabel labelPincel = new JLabel();
+		panelPincel.add(labelPincel);
+		
+		JPanel panelDiseñoInfo = new JPanel();
+		panelDiseñoInfo.add(panelColorInfo);
+		panelDiseñoInfo.add(panelPincel);
+		
+		panelInformacion.add(panelDiseñoInfo);
+		panelInformacion.add(panelPosicion);
+		
+		panelColorInfo.setBackground(Color.white);
+		panelDiseñoInfo.setBackground(Color.WHITE);
+		panelPincel.setBackground(Color.WHITE);
+		panelPosicion.setBackground(Color.WHITE);
+		panelInformacion.setBackground(Color.WHITE);
+		titulo.setTitleColor(new Color(111, 195, 179));
+		titulo.setBorder(new LineBorder(new Color(111, 195, 179)));
+	
+	
+		
+		
+		Thread hiloInformacion = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				while(true) {
+					xLabel.setText("X: " + cp.getxConstante());
+					yLabel.setText("Y: " + cp.getyConstante());
+					try {
+						botonColorInfo.setBackground(cp.getGraficos().getColor());
+					} catch(Exception e) {
+						botonColorInfo.setBackground(Color.black);
+					}
+					labelPincel.removeAll();
+					labelPincel.setIcon(new ImageIcon("iconos/" + pincelesCombo.getSelectedItem() + ".png"));
+					
+					repaint();
+					validate();
+				}
+				
+			}
+		});
+		hiloInformacion.start();
+		add(panelInformacion);
+		
+		
+		
 		setVisible(true);
 		logger.info("Menu inicializado correctamente.");
 	}
