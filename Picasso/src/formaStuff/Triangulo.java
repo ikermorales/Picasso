@@ -25,8 +25,6 @@ public class Triangulo extends Forma {
 		this.base = 0;
 	}
 	
-	
-	
 	public double getAltura() {
 		return altura;
 	}
@@ -38,17 +36,5 @@ public class Triangulo extends Forma {
 	}
 	public void setBase(double base) {
 		this.base = base;
-	}
-
-	@Override
-	public String toString() {
-		return "Triangulo [altura=" + altura + ", base=" + base + ", getColor()=" + getColor() + ", isEstanRellenas()="
-				+ isEstanRellenas() + ", toString()=" + super.toString() + ", getClass()=" + getClass()
-				+ ", hashCode()=" + hashCode() + "]";
-	}
-	
-	
-	
-	
-	
+	}	
 }
