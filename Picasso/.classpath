@@ -6,6 +6,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="JUnitTests"/>
 	<classpathentry kind="lib" path="lib/sqlite-jdbc-3.32.3.2.jar"/>
 	<classpathentry kind="lib" path="lib/commons-dbutils-1.7.jar"/>
 	<classpathentry kind="lib" path="lib/org.apache.commons.io.jar"/>
