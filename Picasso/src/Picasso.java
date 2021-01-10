@@ -21,8 +21,8 @@ public class Picasso {
 			SimpleFormatter formatter = new SimpleFormatter();  
 			fH.setFormatter(formatter);
 			LOGGER.addHandler(fH);
-
-
+			
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
